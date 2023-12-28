@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+    x:Class="YsmStore.App"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:YsmStore.Models">
+    <Application.Resources>
+
+        <Color x:Key="RegualrButtonColor">#90b6c8</Color>
+        <Color x:Key="LinkedLabelColor">#0645AD</Color>
+        <Color x:Key="Color1">#e8e8e8</Color>
+        <Color x:Key="Color2">#5b5453</Color>
+        <Color x:Key="Color3">#e6e1e1</Color>
+        <Color x:Key="Color4">#000330</Color>
+
+        <Style x:Key="RoundedFrame" TargetType="Frame">
+            <Setter Property="CornerRadius" Value="20" />
+        </Style>
+
+        <Style x:Key="Caption1" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontSize" Value="45" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor" Value="{StaticResource Color2}" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Caption2" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="TextColor" Value="{StaticResource Color2}" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Button1" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{StaticResource RegualrButtonColor}" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="TextTransform" Value="None" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+
+        <Style x:Key="Text1" TargetType="Label">
+            <Setter Property="TextColor" Value="Black" />
+        </Style>
+
+        <Style x:Key="Caption3" TargetType="Label">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Button2" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{StaticResource Color2}" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="TextTransform" Value="None" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+
+        <Style x:Key="Text2" TargetType="Label">
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="FontSize" Value="20" />
+        </Style>
+
+        <Style x:Key="Entry1" TargetType="Entry">
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="PlaceholderColor" Value="Gray" />
+        </Style>
+
+        <Style x:Key="DatePicker1" TargetType="DatePicker">
+            <Setter Property="TextColor" Value="Black" />
+        </Style>
+
+        <Style x:Key="Picker1" TargetType="Picker">
+            <Setter Property="TextColor" Value="Black" />
+        </Style>
+
+        <models:OrderStatusToStringConverter x:Key="orderStatusConverter" />
+
+        <models:BoolInverseConverter x:Key="boolInverseConverter" />
+
+        <models:StatusFilterToStringConverter x:Key="statusFilterConverter" />
+
+    </Application.Resources>
+</Application>

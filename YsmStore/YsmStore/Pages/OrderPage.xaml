@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.OrderPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:maskedentry="clr-namespace:Xamarin.Forms.MaskedEntry;assembly=Xamarin.Forms.MaskedEntry"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar />
+
+            <ScrollView>
+                <StackLayout Margin="20,20,20,0">
+                    <StackLayout HeightRequest="250">
+                        <controls:ProductAmountListView ItemsSource="{Binding Products}" />
+                    </StackLayout>
+
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="{StaticResource Color2}"
+                        HeightRequest="5"
+                        Style="{StaticResource RoundedFrame}" />
+
+                    <StackLayout Margin="0,20,0,20">
+                        <Label
+                            IsVisible="{Binding AreSomeProductsNotEnough}"
+                            Style="{StaticResource Text1}"
+                            Text="Некоторых товаров недостаточно на складе. Уменьшите их количестов или удалите их, чтобы сделать заказ."
+                            TextColor="Red" />
+
+                        <Label Style="{StaticResource Caption2}" Text="Город" />
+                        <Picker
+                            ItemsSource="{Binding Cities}"
+                            SelectedItem="{Binding Model.City}"
+                            Style="{StaticResource Picker1}" />
+
+                        <Label Style="{StaticResource Caption2}" Text="Адрес отделения СДЕК" />
+                        <Picker
+                            ItemsSource="{Binding Adresses}"
+                            SelectedItem="{Binding Model.PickUpAdress}"
+                            Style="{StaticResource Picker1}" />
+
+                        <Label Style="{StaticResource Caption2}" Text="Контактный телефон" />
+                        <maskedentry:MaskedEntry
+                            Keyboard="Numeric"
+                            Mask="+7 (XXX) XXX-XX-XX"
+                            Placeholder="+7 ..."
+                            Style="{StaticResource Entry1}"
+                            Text="{Binding Model.PhoneNumber}" />
+
+                        <Label
+                            Margin="10"
+                            Style="{StaticResource Text1}"
+                            Text="Оплатить заказ можно картой или наличными, это нужно будет сделать при получении." />
+
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Total, StringFormat='Сумма: {0:F2}'}" />
+
+                        <Button
+                            Clicked="OrderButton_Tapped"
+                            IsEnabled="{Binding CanOrder}"
+                            Style="{StaticResource Button2}"
+                            Text="Заказать" />
+                    </StackLayout>
+
+                </StackLayout>
+            </ScrollView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

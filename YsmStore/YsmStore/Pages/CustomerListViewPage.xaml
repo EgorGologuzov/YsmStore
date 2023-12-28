@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.CustomerListViewPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.BindingContext>
+        <models:CustomerListView />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Style="{StaticResource Caption3}" Text="ПОЛЬЗОВАТЕЛИ" />
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout>
+                <CollectionView
+                    x:Name="collectionView"
+                    EmptyView="Пусто"
+                    ItemsSource="{Binding Items}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
+                    <CollectionView.Header>
+                        <Grid Padding="10,0" ColumnDefinitions="*,100">
+                            <controls:RegularEntry Placeholder="Почта пользователя" Text="{Binding Query.EmailText}" />
+                            <Button
+                                Grid.Column="1"
+                                Command="{Binding Search}"
+                                Style="{StaticResource Button1}"
+                                Text="Поиск" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="20,10,20,10" BackgroundColor="{StaticResource Color1}">
+                                <Frame Padding="20" Style="{StaticResource RoundedFrame}">
+                                    <StackLayout>
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.FullName}" />
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.UserName}" />
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.Login}" />
+                                        <Grid ColumnDefinitions="*,*">
+                                            <Button
+                                                Clicked="OrdersButton_Tapped"
+                                                Style="{StaticResource Button1}"
+                                                Text="Заказы" />
+                                            <Button
+                                                Grid.Column="1"
+                                                Command="{Binding WriteEmail}"
+                                                Style="{StaticResource Button2}"
+                                                Text="Написать" />
+                                        </Grid>
+                                    </StackLayout>
+                                </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

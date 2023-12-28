@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="YsmStore.Pages.CustomerOrdersPage"
+             xmlns:controls="clr-namespace:YsmStore.Controls"
+             xmlns:models="clr-namespace:YsmStore.Models"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Color1}">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Text="{Binding Customer.FullName, StringFormat='ЗАКАЗЫ {0}'}" Style="{StaticResource Caption3}"/>
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout>
+                <CollectionView ItemsSource="{Binding Items}" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="20, 10" BackgroundColor="{StaticResource Color1}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Order_Tapped"/>
+                                </Frame.GestureRecognizers>
+                                <Frame Style="{StaticResource RoundedFrame}">
+                                    <StackLayout>
+                                        <Label Text="{Binding Model.OrderDate, StringFormat='Заказ от {0:dd MMMM, yyyy}'}" Style="{StaticResource Text1}"/>
+                                        <Label Text="{Binding Model.Id, StringFormat='Код {0}'}" Style="{StaticResource Text1}"/>
+                                        <Label Text="{Binding Model.Status, Converter={StaticResource orderStatusConverter}, StringFormat='Статус {0}'}"
+                                               Style="{StaticResource Text1}"/>
+                                        <Label Text="{Binding Model.DeliveryDate, StringFormat='Доставка {0:dd MMMM, yyyy}'}"
+                                               Style="{StaticResource Text1}"/>
+                                        <StackLayout HeightRequest="100">
+                                            <CollectionView ItemsLayout="HorizontalGrid, 1" ItemsSource="{Binding Products}" BackgroundColor="{StaticResource Color1}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="10" BackgroundColor="{StaticResource Color1}">
+                                                            <Frame Padding="0">
+                                                                <Image Source="{Binding Product.Avatar}"/>
+                                                            </Frame>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

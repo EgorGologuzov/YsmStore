@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="YsmStore.Pages.ProductPage"
+             xmlns:controls="clr-namespace:YsmStore.Controls"
+             xmlns:models="clr-namespace:YsmStore.Models"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Color1}">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <StackLayout>
+                        <Label Text="{Binding Model.Title}" Style="{StaticResource Caption3}"/>
+                    </StackLayout>
+                </controls:NavigationBar.BarContent>
+                <controls:NavigationBar.RightButton>
+                    <ImageButton Source="cart.png" BackgroundColor="{StaticResource Color4}" CornerRadius="20" Padding="10" Margin="5, 10"
+                                 Clicked="CartButton_Tapped"/>
+                </controls:NavigationBar.RightButton>
+            </controls:NavigationBar>
+            <ScrollView>
+                <StackLayout Margin="20, 0">
+
+                    <Frame Style="{StaticResource RoundedFrame}" BackgroundColor="{StaticResource Color2}" Padding="0">
+                        <Image Source="{Binding Model.Avatar}" Aspect="AspectFill"/>
+                    </Frame>
+
+                    <StackLayout HeightRequest="100" BindingContext="{Binding Option1}" IsVisible="{Binding IsSet}">
+                        <Label Text="{Binding Name}" Style="{StaticResource Caption2}"/>
+                        <CollectionView ItemsSource="{Binding Variants}" SelectionChanged="Option1_SelectionChanged" SelectionMode="Single"
+                                    BackgroundColor="{StaticResource Color1}">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Horizontal"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid RowDefinitions="*, 5">
+                                        <Frame Style="{StaticResource RoundedFrame}" Margin="5, 0" WidthRequest="50"/>
+                                        <Label Text="{Binding Text}" IsVisible="{Binding IsText}" Style="{StaticResource Text2}" VerticalOptions="Center"
+                                               Margin="15, 0" HorizontalOptions="Center"/>
+                                        <Frame BackgroundColor="{Binding Color}" IsVisible="{Binding IsColor}" Style="{StaticResource RoundedFrame}" 
+                                               Margin="5, 0"/>
+                                        <Frame BackgroundColor="White" Opacity="0.6" IsVisible="{Binding IsNotAvailable}"
+                                               Style="{StaticResource RoundedFrame}" Margin="5, 0" Padding="0, 23">
+                                            <Line BackgroundColor="{StaticResource Color2}"/>
+                                        </Frame>
+                                        <Frame Grid.Row="1" IsVisible="{Binding IsSelected}" BackgroundColor="{StaticResource RegualrButtonColor}" Margin="10, 0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+
+                    <StackLayout HeightRequest="100" BindingContext="{Binding Option2}" IsVisible="{Binding IsSet}">
+                        <Label Text="{Binding Name}" Style="{StaticResource Caption2}"/>
+                        <CollectionView ItemsSource="{Binding Variants}" SelectionChanged="Option2_SelectionChanged" SelectionMode="Single"
+                                    BackgroundColor="{StaticResource Color1}">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Horizontal"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid RowDefinitions="*, 5">
+                                        <Frame Style="{StaticResource RoundedFrame}" Margin="5, 0" WidthRequest="50"/>
+                                        <Label Text="{Binding Text}" IsVisible="{Binding IsText}" Style="{StaticResource Text2}" VerticalOptions="Center"
+                                               Margin="15, 0" HorizontalOptions="Center"/>
+                                        <Frame BackgroundColor="{Binding Color}" IsVisible="{Binding IsColor}" Style="{StaticResource RoundedFrame}" 
+                                               Margin="5, 0"/>
+                                        <Frame BackgroundColor="White" Opacity="0.6" IsVisible="{Binding IsNotAvailable}"
+                                               Style="{StaticResource RoundedFrame}" Margin="5, 0" Padding="0, 23">
+                                            <Line BackgroundColor="{StaticResource Color2}"/>
+                                        </Frame>
+                                        <Frame Grid.Row="1" IsVisible="{Binding IsSelected}" BackgroundColor="{StaticResource RegualrButtonColor}" Margin="10, 0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+
+                    <Label Text="{Binding Model.Price, StringFormat='{0:F2}₽'}" Style="{StaticResource Caption2}"/>
+
+                    <Button Text="Заказать" Style="{StaticResource Button2}" Clicked="OrderButton_Tapped" IsEnabled="{Binding CanOrder}"/>
+
+                    <Label Text="Описание" Style="{StaticResource Caption2}"/>
+
+                    <Label Text="{Binding Model.Description}" Style="{StaticResource Text2}"/>
+
+                    <Label Text="Характеристики" Style="{StaticResource Caption2}"/>
+
+                    <StackLayout HeightRequest="200">
+                        <CollectionView ItemsSource="{Binding Properties}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*,*" Margin="20, 0">
+                                        <Label Text="{Binding Key, StringFormat='{0}:'}" Style="{StaticResource Text2}" FontAttributes="Bold" Margin="0, 0, 10, 0"/>
+                                        <Label Text="{Binding Value}" Style="{StaticResource Text2}" Grid.Column="1"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    
+
+                </StackLayout>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

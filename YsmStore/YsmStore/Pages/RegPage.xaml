@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="YsmStore.Pages.RegPage"
+             xmlns:controls="clr-namespace:YsmStore.Controls"
+             xmlns:models="clr-namespace:YsmStore.Models"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Color1}">
+    <ContentPage.BindingContext>
+        <models:RegData/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Text="РЕГИСТРАЦИЯ" Style="{StaticResource Caption3}"/>
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout Margin="30, 0" VerticalOptions="CenterAndExpand">
+                <controls:RegularEntry Placeholder="Почта" Margin="0, 10" Text="{Binding Login}"/>
+                <controls:RegularEntry Placeholder="Полное имя" Margin="0, 10" Text="{Binding FullName}"/>
+                <controls:RegularEntry Placeholder="Имя пользователя" Margin="0, 10" Text="{Binding UserName}"/>
+                <controls:PasswordEntry Placeholder="Пароль" Margin="0, 10" Text="{Binding Password}"/>
+                <controls:PasswordEntry Placeholder="Повторите пароль" Margin="0, 10" Text="{Binding PasswordRepeat}"/>
+            </StackLayout>
+            <StackLayout Margin="30">
+                <Button Text="Зарегистрироваться" Style="{StaticResource Button1}" Clicked="RegButton_Tapped"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

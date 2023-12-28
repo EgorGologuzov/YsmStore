@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="YsmStore.Controls.RegularEntry"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
+    <ContentView.Content>
+        <Frame x:Name="frame" Style="{StaticResource RoundedFrame}" Padding="15, 0">
+            <Entry x:Name="entry" Style="{StaticResource Entry1}"/>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

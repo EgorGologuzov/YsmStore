@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.AdminProductPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <StackLayout>
+                        <Label Style="{StaticResource Caption3}" Text="{Binding Model.Title}" />
+                    </StackLayout>
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <ScrollView>
+                <StackLayout Margin="20,0">
+
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="{StaticResource Color2}"
+                        Style="{StaticResource RoundedFrame}">
+                        <Image
+                            x:Name="avatarImage"
+                            Aspect="AspectFill"
+                            Source="{Binding Model.Avatar}" />
+                    </Frame>
+                    <Button
+                        Clicked="ChooseImageButton_Tapped"
+                        Style="{StaticResource Button1}"
+                        Text="Выбрать картинку" />
+
+                    <Label Style="{StaticResource Caption2}" Text="Название" />
+                    <Entry
+                        Placeholder="Название"
+                        Style="{StaticResource Entry1}"
+                        Text="{Binding Model.Title}" />
+
+                    <StackLayout
+                        BindingContext="{Binding Option1}"
+                        HeightRequest="100"
+                        IsVisible="{Binding IsSet}">
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Name}" />
+                        <Entry
+                            Placeholder="Значение опции 1"
+                            Style="{StaticResource Entry1}"
+                            Text="{Binding Model.Option1}" />
+                    </StackLayout>
+
+                    <StackLayout
+                        BindingContext="{Binding Option2}"
+                        HeightRequest="100"
+                        IsVisible="{Binding IsSet}">
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Name}" />
+                        <Entry
+                            Placeholder="Значение опции 2"
+                            Style="{StaticResource Entry1}"
+                            Text="{Binding Model.Option2}" />
+                    </StackLayout>
+
+                    <Label Style="{StaticResource Caption2}" Text="Цена" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Placeholder="Цена продукта"
+                        Style="{StaticResource Entry1}"
+                        Text="{Binding Model.Price}" />
+
+                    <Label Style="{StaticResource Caption2}" Text="На складе" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Placeholder="Количество на складе"
+                        Style="{StaticResource Entry1}"
+                        Text="{Binding Model.Quantity}" />
+
+                    <Label Style="{StaticResource Caption2}" Text="Описание" />
+                    <Editor
+                        AutoSize="TextChanges"
+                        MaxLength="500"
+                        Placeholder="Описание"
+                        PlaceholderColor="Gray"
+                        Text="{Binding Model.Description}"
+                        TextColor="Black" />
+
+                    <Label Style="{StaticResource Caption2}" Text="Характеристики" />
+                    <StackLayout HeightRequest="200">
+                        <CollectionView
+                            x:Name="propertyView"
+                            ItemsSource="{Binding Properties}"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="20,0" ColumnDefinitions="*,*">
+                                        <Label
+                                            Margin="0,0,10,0"
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource Text2}"
+                                            Text="{Binding Key, StringFormat='{0}:'}" />
+                                        <Label
+                                            Grid.Column="1"
+                                            Style="{StaticResource Text2}"
+                                            Text="{Binding Value}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <Button
+                        Clicked="AddPropertyButton_Tapped"
+                        Style="{StaticResource Button1}"
+                        Text="Добавить" />
+                    <Button
+                        Clicked="RemovePropertyButton_Tapped"
+                        Style="{StaticResource Button1}"
+                        Text="Удалить выбранную" />
+
+                    <Button
+                        Margin="0,30,0,30"
+                        Clicked="SaveButton_Tapped"
+                        Style="{StaticResource Button2}"
+                        Text="Сохранить" />
+
+                </StackLayout>
+            </ScrollView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

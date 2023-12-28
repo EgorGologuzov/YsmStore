@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.StoragePage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Style="{StaticResource Caption3}" Text="СКЛАД" />
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout>
+                <CollectionView
+                    ItemsSource="{Binding Items}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
+
+                    <CollectionView.Header>
+
+                        <StackLayout Padding="10,0">
+                            <Grid ColumnDefinitions="*,100">
+                                <controls:RegularEntry Placeholder="Код или название товара" Text="{Binding Query.QueryText}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Search}"
+                                    Style="{StaticResource Button1}"
+                                    Text="Поиск" />
+                            </Grid>
+                        </StackLayout>
+
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Padding="20,10"
+                                ColumnDefinitions="*, 2*"
+                                RowDefinitions="120">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Product_Tapped" />
+                                </Grid.GestureRecognizers>
+                                <Frame Padding="0" Style="{StaticResource RoundedFrame}">
+                                    <Image Aspect="AspectFill" Source="{Binding Model.Avatar}" />
+                                </Frame>
+                                <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Style="{StaticResource Caption2}" Text="{Binding Info}" />
+                                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.Id, StringFormat='Код {0}'}" />
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.Quantity, StringFormat='({0} шт.)'}" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

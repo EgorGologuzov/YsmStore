@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<CollectionView xmlns="http://xamarin.com/schemas/2014/forms" 
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                x:Class="YsmStore.Controls.ProductAmountListView" 
+                BackgroundColor="{StaticResource Color1}"
+                x:Name="thisCollectionView">
+    <CollectionView.ItemTemplate>
+        <DataTemplate>
+            <StackLayout Padding="0, 20">
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Product_Tapped"/>
+                </StackLayout.GestureRecognizers>
+                <Grid ColumnDefinitions="100, *" RowDefinitions="100">
+                    <Frame x:Name="frame" Style="{StaticResource RoundedFrame}" BackgroundColor="{StaticResource Color2}" Padding="0">
+                        <Image Source="{Binding Product.Avatar}"/>
+                    </Frame>
+                    <Label Text="{Binding Info}" Style="{StaticResource Caption2}" VerticalOptions="Center" Grid.Column="1"/>
+                </Grid>
+                <Grid ColumnDefinitions="*,*,*,2*">
+                    <Button Text="-" Style="{StaticResource Button2}" Command="{Binding RemoveOne}"/>
+                    <Label Text="{Binding Model.Amount}" Style="{StaticResource Text2}" VerticalOptions="Center"
+                           Grid.Column="1" HorizontalOptions="Center"/>
+                    <Button Text="+" Grid.Column="2" Style="{StaticResource Button2}" Command="{Binding AddOne}"/>
+                    <Button Text="Удалить" Grid.Column="3" Style="{StaticResource Button2}" BackgroundColor="Red"
+                            Clicked="DeleteButton_Tapped"/>
+                </Grid>
+                <Label Text="{Binding Product.Quantity, StringFormat='Осталось: {0:F0} шт.'}" Style="{StaticResource Text2}"
+                       TextColor="Red" HorizontalOptions="Center" IsVisible="{Binding IsAmountMoreThanQuantity}"/>
+            </StackLayout>
+        </DataTemplate>
+    </CollectionView.ItemTemplate>
+</CollectionView>

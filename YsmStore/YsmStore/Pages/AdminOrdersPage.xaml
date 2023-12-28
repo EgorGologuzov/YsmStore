@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.AdminOrdersPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Style="{StaticResource Caption3}" Text="ЗАКАЗЫ" />
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout>
+                <CollectionView
+                    ItemsSource="{Binding Items}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
+
+                    <CollectionView.Header>
+
+                        <StackLayout Padding="10,0">
+                            <Grid ColumnDefinitions="*, *">
+                                <Frame Padding="10,0" Style="{StaticResource RoundedFrame}">
+                                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                        <Label
+                                            Style="{StaticResource Text2}"
+                                            Text="От:"
+                                            VerticalOptions="Center" />
+                                        <DatePicker
+                                            Date="{Binding Query.StartDate}"
+                                            Style="{StaticResource DatePicker1}"
+                                            VerticalOptions="Center" />
+                                    </StackLayout>
+                                </Frame>
+                                <Frame
+                                    Grid.Column="1"
+                                    Padding="10,0"
+                                    Style="{StaticResource RoundedFrame}">
+                                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                        <Label
+                                            Style="{StaticResource Text2}"
+                                            Text="До:"
+                                            VerticalOptions="Center" />
+                                        <DatePicker
+                                            Date="{Binding Query.EndDate}"
+                                            HorizontalOptions="Center"
+                                            Style="{StaticResource DatePicker1}" />
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+
+                            <Frame Padding="25,0" Style="{StaticResource RoundedFrame}">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label
+                                        Style="{StaticResource Text2}"
+                                        Text="Статус:"
+                                        VerticalOptions="Center" />
+                                    <Picker
+                                        x:Name="statusFilter"
+                                        HorizontalOptions="FillAndExpand"
+                                        ItemsSource="{Binding StatusFilterVariants}"
+                                        SelectedItem="{Binding Query.StatusFilter, Converter={StaticResource statusFilterConverter}}"
+                                        Style="{StaticResource Picker1}" />
+                                </StackLayout>
+                            </Frame>
+
+                            <Grid ColumnDefinitions="*,100">
+                                <controls:RegularEntry
+                                    Keyboard="Numeric"
+                                    Placeholder="Код заказа"
+                                    Text="{Binding Query.OrderId}"
+                                    TextChanged="OrderIdString_TextChanged" />
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding Search}"
+                                    Style="{StaticResource Button1}"
+                                    Text="Поиск" />
+                            </Grid>
+                        </StackLayout>
+
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="20,10" BackgroundColor="{StaticResource Color1}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Order_Tapped" />
+                                </Frame.GestureRecognizers>
+                                <Frame Style="{StaticResource RoundedFrame}">
+                                    <StackLayout>
+                                        <Label Style="{StaticResource Text2}" Text="{Binding Model.CustomerEmail, StringFormat='Клиент: {0}'}" />
+                                        <Label Style="{StaticResource Text1}" Text="{Binding Model.OrderDate, StringFormat='Заказ от {0:dd MMMM, yyyy}'}" />
+                                        <Label Style="{StaticResource Text1}" Text="{Binding Model.Id, StringFormat='Код {0}'}" />
+                                        <Label Style="{StaticResource Text1}" Text="{Binding Model.Status, Converter={StaticResource orderStatusConverter}, StringFormat='Статус {0}'}" />
+                                        <Label Style="{StaticResource Text1}" Text="{Binding Model.DeliveryDate, StringFormat='Доставка {0:dd MMMM, yyyy}'}" />
+                                        <StackLayout HeightRequest="100">
+                                            <CollectionView
+                                                BackgroundColor="{StaticResource Color1}"
+                                                ItemsLayout="HorizontalGrid, 1"
+                                                ItemsSource="{Binding Products}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="10" BackgroundColor="{StaticResource Color1}">
+                                                            <Frame Padding="0">
+                                                                <Image Source="{Binding Product.Avatar}" />
+                                                            </Frame>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

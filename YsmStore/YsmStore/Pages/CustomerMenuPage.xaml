@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="YsmStore.Pages.CustomerMenuPage"
+             xmlns:controls="clr-namespace:YsmStore.Controls"
+             xmlns:models="clr-namespace:YsmStore.Models"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource Color1}">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar IsBackButtonVisible="False">
+                <controls:NavigationBar.BarContent>
+                    <Label Text="{Binding Greetings}" Style="{StaticResource Caption3}"/>
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+            <StackLayout Margin="30" VerticalOptions="StartAndExpand">
+                <Button Text="Выбрать товары" Style="{StaticResource Button1}" Margin="0, 0, 0, 20" Clicked="ChooseProductButton_Tapped"/>
+                <Button Text="Купленные товары" Style="{StaticResource Button1}" Margin="0, 0, 0, 20" Clicked="OrdersButton_Tapped"/>
+                <Button Text="Корзина" Style="{StaticResource Button1}" Margin="0, 0, 0, 20" Clicked="CartButton_Tapped"/>
+            </StackLayout>
+            <StackLayout Margin="30">
+                <Button Text="Выйти" Clicked="LogoutButton_Tapped" Style="{StaticResource Button2}"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

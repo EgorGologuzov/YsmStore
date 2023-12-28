@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.CustomerCartPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar>
+                <controls:NavigationBar.BarContent>
+                    <Label Style="{StaticResource Caption3}" Text="КОРЗИНА" />
+                </controls:NavigationBar.BarContent>
+            </controls:NavigationBar>
+
+            <StackLayout Margin="20,0">
+
+                <StackLayout>
+                    <controls:ProductAmountListView
+                        ItemsSource="{Binding Items}"
+                        ProductTapped="Product_Tapped"
+                        RemainingItemsThreshold="1"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadNext}" />
+                </StackLayout>
+
+                <Button
+                    Margin="0,10"
+                    Clicked="OrderButton_Tapped"
+                    Style="{StaticResource Button2}"
+                    Text="Заказать"
+                    VerticalOptions="EndAndExpand" />
+
+            </StackLayout>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="YsmStore.Pages.AdminOrderPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <controls:NavigationBar />
+
+            <ScrollView>
+                <StackLayout Margin="20,20,20,0">
+                    <StackLayout HeightRequest="250">
+                        <CollectionView ItemsSource="{Binding Products}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid
+                                        Padding="0,10"
+                                        ColumnDefinitions="*, 2*"
+                                        RowDefinitions="120">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="Product_Tapped" />
+                                        </Grid.GestureRecognizers>
+                                        <Frame Padding="0" Style="{StaticResource RoundedFrame}">
+                                            <Image Aspect="AspectFill" Source="{Binding Product.Avatar}" />
+                                        </Frame>
+                                        <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label Style="{StaticResource Caption2}" Text="{Binding Info}" />
+                                            <Label Style="{StaticResource Caption2}" Text="{Binding Model.Amount, StringFormat='{0} шт.'}" />
+                                        </StackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="{StaticResource Color2}"
+                        HeightRequest="5"
+                        Style="{StaticResource RoundedFrame}" />
+
+                    <StackLayout Margin="0,20,0,20">
+
+                        <Label Style="{StaticResource Text1}" Text="{Binding Model.OrderDate, StringFormat='Заказ от {0:dd MMMM, yyyy}'}" />
+
+                        <Label Style="{StaticResource Text1}" Text="{Binding Model.Id, StringFormat='Код {0}'}" />
+
+                        <Label Style="{StaticResource Text1}" Text="{Binding Model.City, StringFormat='Город: {0}'}" />
+
+                        <Label Style="{StaticResource Text1}" Text="{Binding Model.PickUpAdress, StringFormat='Адрес пункта выдачи: {0}'}" />
+
+                        <Label Style="{StaticResource Text1}" Text="{Binding Model.PhoneNumber, StringFormat='Контактный телефон: {0}'}" />
+
+                        <Label Style="{StaticResource Caption2}" Text="Дата доставки" />
+                        <DatePicker Date="{Binding Model.DeliveryDate}" Style="{StaticResource DatePicker1}" />
+
+                        <Label Style="{StaticResource Caption2}" Text="Статус" />
+                        <Picker
+                            ItemsSource="{Binding OrderStatusVariants}"
+                            SelectedItem="{Binding Model.Status, Converter={StaticResource orderStatusConverter}}"
+                            Style="{StaticResource Picker1}" />
+
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Total, StringFormat='Сумма: {0:F2}'}" />
+
+                        <Button
+                            Clicked="SaveButton_Tapped"
+                            Style="{StaticResource Button2}"
+                            Text="Сохранить" />
+
+                    </StackLayout>
+
+                </StackLayout>
+            </ScrollView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
