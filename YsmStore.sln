@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YsmStore.iOS", "YsmStore\Ys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YsmStore", "YsmStore\YsmStore\YsmStore.csproj", "{23CBC87D-1C6A-4980-BEB4-20BB7C701B3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YsmStore.API", "YsmStore.API\YsmStore.API.csproj", "{28D641F8-2AAA-462D-8B54-0A1E42F896AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,18 @@ Global
 		{23CBC87D-1C6A-4980-BEB4-20BB7C701B3E}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{23CBC87D-1C6A-4980-BEB4-20BB7C701B3E}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{23CBC87D-1C6A-4980-BEB4-20BB7C701B3E}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|iPhone.Build.0 = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{28D641F8-2AAA-462D-8B54-0A1E42F896AF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
