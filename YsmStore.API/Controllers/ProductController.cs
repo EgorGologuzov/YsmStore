@@ -84,14 +84,7 @@ namespace YsmStore.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Product result = await _repos.Get(id);
-
-            return Ok(result);
+            return await GetByIdGeneric(id);
         }
 
         [Authorize]
@@ -130,7 +123,7 @@ namespace YsmStore.API.Controllers
             }
 
             IList<OrderedProduct> result = await _repos.GetProductsForOrder(orderId);
-            IList<OrderedProductReturnDto> returnResult = Mapper.Map<IList<OrderedProductReturnDto>>(result);
+            IList<OrderedProductDto> returnResult = Mapper.Map<IList<OrderedProductDto>>(result);
 
             return Ok(returnResult);
         }

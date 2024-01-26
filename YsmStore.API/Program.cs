@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<IPickUpPointsRepository, PickUpPointsRepository>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
 // Конфигурация авторизации по Bearer токену 

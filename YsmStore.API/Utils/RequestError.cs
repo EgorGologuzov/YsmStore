@@ -12,5 +12,8 @@
         public static readonly ErrorData LoginNotFound = new("ERROR-6", "User with that login not found");
         public static readonly ErrorData AmountIsNotPositive = new("ERROR-7", "Amount must be more than 0");
         public static readonly ErrorData OptionNumberOutOfRange = new("ERROR-8", "Option number must be 1 or 2");
+        public static readonly ErrorData CdekApiBadRequest = new("ERROR-9", "CDEK API return not OK response");
+        public static readonly ErrorData NoProductsInOrder = new("ERROR-10", "Try create or update order with 0 products");
+        public static readonly ErrorData NotEnoughtProduct = new("ERROR-11", "Quantity of product in stock less than it amount in order");
     }
 }

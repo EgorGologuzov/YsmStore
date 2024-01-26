@@ -60,6 +60,9 @@ namespace YsmStore.API.Data.Implementations
                 case 3:
                     query = query.OrderByDescending(p => p.Quantity);
                     break;
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
             }
 
             return await query.Skip(offset).Take(limit).ToListAsync();

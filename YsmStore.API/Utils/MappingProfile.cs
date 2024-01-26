@@ -16,9 +16,15 @@ namespace YsmStore.API.Utils
                 .ReverseMap();
             CreateMap<ProductReturnDto, Product>()
                 .ReverseMap();
-            CreateMap<OrderedProductReturnDto, OrderedProduct>()
+            CreateMap<OrderedProductDto, OrderedProduct>()
                 .ReverseMap();
             CreateMap<ProductUpdateDto, Product>()
+                .ReverseMap();
+            CreateMap<OrderReturnDto, Order>()
+                .ReverseMap();
+            CreateMap<OrderCreateDto, Order>()
+                .ReverseMap();
+            CreateMap<OrderUpdateDto, Order>()
                 .ReverseMap();
         }
     }

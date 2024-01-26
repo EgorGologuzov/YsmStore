@@ -74,6 +74,20 @@ namespace YsmStore.API.Controllers
         }
 
         [NonAction]
+        public IActionResult NoProductsInOrder()
+        {
+            ModelState.AddModelError(RequestError.NoProductsInOrder.Code, RequestError.NoProductsInOrder.Message);
+            return BadRequest(ModelState);
+        }
+
+        [NonAction]
+        public IActionResult NotEnoughtProduct()
+        {
+            ModelState.AddModelError(RequestError.NotEnoughtProduct.Code, RequestError.NotEnoughtProduct.Message);
+            return BadRequest(ModelState);
+        }
+
+        [NonAction]
         public string GetClaimValue(string type)
         {
             Claim claim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == type);
