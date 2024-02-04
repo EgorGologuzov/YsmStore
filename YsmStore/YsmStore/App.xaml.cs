@@ -10,19 +10,8 @@ namespace YsmStore
         public App()
         {
             InitializeComponent();
+            MainPage = new NavigationPage();
             TryLogin();
-        }
-
-        private void TryLogin()
-        {
-            try
-            {
-                AuthSystem.Login(AuthSystem.SavedData);
-            }
-            catch (YsmStoreException)
-            {
-                MainPage = new NavigationPage(new AuthPage());
-            }
         }
 
         public void SetStartPageForLoginedUser()
@@ -40,6 +29,17 @@ namespace YsmStore
                 throw new YsmStoreException(string.Empty);
 
             MainPage = page;
+        }
+        private async void TryLogin()
+        {
+            try
+            {
+                await AuthSystem.Login(AuthSystem.SavedData);
+            }
+            catch (YsmStoreException)
+            {
+                MainPage = new NavigationPage(new AuthPage());
+            }
         }
     }
 }

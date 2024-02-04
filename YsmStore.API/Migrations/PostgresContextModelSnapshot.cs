@@ -166,6 +166,11 @@ namespace YsmStore.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Category");
+
+                    b.HasIndex("Title", "Option1", "Option2")
+                        .IsUnique();
+
                     b.ToTable("Products");
                 });
 
@@ -176,6 +181,9 @@ namespace YsmStore.API.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("AddDateTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Amount")
                         .HasColumnType("integer");

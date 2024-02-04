@@ -15,7 +15,7 @@
             <StackLayout Grid.RowSpan="3" Padding="20">
                 <StackLayout VerticalOptions="EndAndExpand" Padding="0, 0, 0, 40">
                     <Image Source="Logo_2" WidthRequest="150"/>
-                    <Label Text="YSMStore" Style="{StaticResource Caption1}"/>
+                    <Label Text="TechoCore" Style="{StaticResource Caption1}"/>
                     <Label Text="ТЕХНИКА APPLE" Style="{StaticResource Caption2}"/>
                 </StackLayout>
                 <StackLayout>

@@ -44,14 +44,14 @@ namespace YsmStore.API.Controllers
 
         [Authorize(Roles = ClientRoles.Admin)]
         [HttpGet("search")]
-        public async Task<IActionResult> GetByEmail([FromBody] CustomerByEmailRequestDto data)
+        public async Task<IActionResult> GetByEmail([FromQuery] CustomerByEmailRequestDto data)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IList<Customer> result = await _repos.GetByEmail(data.Email, data.Offset, data.Limit);
+            IList<Customer> result = await _repos.GetByEmail(data.Email ?? string.Empty, data.Offset, data.Limit);
             IList<CustomerReturnDto> returnResult = Mapper.Map<IList<CustomerReturnDto>>(result);
 
             return Ok(returnResult);

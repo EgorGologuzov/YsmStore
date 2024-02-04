@@ -4,7 +4,8 @@ namespace YsmStore.Models
 {
     public class Order : YsmStoreModel
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
+        public Guid CustomerId { get; set; }
         public string CustomerEmail { get; set; }
         public DateTime OrderDate { get; set; }
 
@@ -41,11 +42,6 @@ namespace YsmStore.Models
         {
             get => _status;
             set { _status = value; InvokePropertyChanged(nameof(Status)); }
-        }
-
-        public Order(int id)
-        {
-            Id = id;
         }
     }
 }

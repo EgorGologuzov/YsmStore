@@ -8,7 +8,5 @@
             get => _sessionCode;
             set { _sessionCode = value; InvokePropertyChanged(nameof(SessionCode)); }
         }
-
-        public Admin(string token) : base(token) { }
     }
 }

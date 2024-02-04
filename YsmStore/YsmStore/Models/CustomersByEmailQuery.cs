@@ -2,11 +2,11 @@
 {
     public class CustomersByEmailQuery : Query
     {
-        private string _queryText;
+        private string _emailText;
         public string EmailText
         {
-            get => _queryText;
-            set { _queryText = value; InvokePropertyChanged(nameof(EmailText)); }
+            get => _emailText;
+            set { _emailText = value; InvokePropertyChanged(nameof(EmailText)); }
         }
     }
 }

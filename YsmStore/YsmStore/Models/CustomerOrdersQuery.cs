@@ -1,7 +1,9 @@
-﻿namespace YsmStore.Models
+﻿using System;
+
+namespace YsmStore.Models
 {
     public class CustomerOrdersQuery : Query
     {
-        public string CustomerToken { get; set; }
+        public Guid CustomerId { get; set; }
     }
 }

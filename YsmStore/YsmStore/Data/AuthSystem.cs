@@ -1,4 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 using YsmStore.Models;
 
 namespace YsmStore.Data
@@ -16,6 +21,8 @@ namespace YsmStore.Data
         private const string PASSWORDS_NOT_EQUAL_MESSAGE = "Пароли не совпадают";
         private const string AUTHDATA_IS_NULL_MESSAGE = "AuthData is null";
         private const string RECOVERY_PASSWORD_UNFILLED_MESSAGE = "Пароль восстановления не заполнен";
+
+        private static HttpClient _client = new HttpClient();
 
         public static User LoginedUser { get; private set; }
 
@@ -57,45 +64,124 @@ namespace YsmStore.Data
             }
         }
 
-        public static void Login(AuthData data)
+        public static async Task Login(AuthData data)
         {
             string errorMessage = CheckAuthData(data);
             if (errorMessage != null)
                 throw new YsmStoreException(errorMessage);
 
-            //execute query, get token
-            string token = data.Login == TestingData.ADMIN_TEST_LOGIN ? TestingData.ADMIN_TEST_TOKEN : TestingData.CUSTOMER_TEST_TOKEN;
-            LoginedUser = UserAdapter.Get(token);
-            SavedData = data.RememberMe ? data : null;
-            ((App)App.Current).SetStartPageForLoginedUser();
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.GetAsync($"{ApiOptions.RootUrl}/auth/{data.Login}/{data.Password}");
+                response.EnsureSuccessStatusCode();
+                string token = await response.Content.ReadAsStringAsync();
+
+                LoginedUser = await UserAdapter.Get(token);
+                LoginedUser.Login = data.Login;
+                LoginedUser.Password = data.Password;
+
+                SavedData = data.RememberMe ? data : null;
+                ((App)App.Current).SetStartPageForLoginedUser();
+            }
+            catch (HttpRequestException)
+            {
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    throw new YsmStoreException("Неверный логин или пароль");
+                }
+                else
+                {
+                    throw new YsmStoreException("Не удалось подключиться к серверу");
+                }
+            }
+            finally
+            {
+                response?.Dispose();
+            }
         }
 
-        public static void Login(RegData data)
+        public static async Task Login(RegData data)
         {
             string errorMessage = CheckRegData(data);
             if (errorMessage != null)
                 throw new YsmStoreException(errorMessage);
 
-            //execute query, get token
-            string token = TestingData.CUSTOMER_TEST_TOKEN;
-            LoginedUser = UserAdapter.Get(token);
-            AuthData authData = new AuthData() { Login = data.Login, Password = data.Password, RememberMe = true };
-            SavedData = authData;
-            ((App)App.Current).SetStartPageForLoginedUser();
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.PostAsync($"{ApiOptions.RootUrl}/auth", data.ToStringContent());
+                response.EnsureSuccessStatusCode();
+                string token = await response.Content.ReadAsStringAsync();
+
+                LoginedUser = await UserAdapter.Get(token);
+                LoginedUser.Login = data.Login;
+                LoginedUser.Password = data.Password;
+
+                SavedData = new AuthData() { Login = data.Login, Password = data.Password, RememberMe = true };
+                ((App)App.Current).SetStartPageForLoginedUser();
+            }
+            catch (HttpRequestException)
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest && await response.FirstErrorKey() == RequestError.LoginNotAvailable)
+                {
+                    throw new YsmStoreException("Пользователь с таким логином уже существует");
+                }
+                else
+                {
+                    throw new YsmStoreException("Не удалось подключиться к серверу");
+                }
+            }
+            finally
+            {
+                response?.Dispose();
+            }
         }
 
-        public static void Login(RecoveryData data)
+        public static async Task Login(RecoveryData data)
         {
             string errorMessage = CheckRecoveryData(data);
             if (errorMessage != null)
                 throw new YsmStoreException(errorMessage);
 
-            //execute query, get token
-            string token = TestingData.CUSTOMER_TEST_TOKEN;
-            LoginedUser = UserAdapter.Get(token);
-            AuthData authData = new AuthData() { Login = data.Login, Password = data.NewPassword, RememberMe = true };
-            SavedData = authData;
-            ((App)App.Current).SetStartPageForLoginedUser();
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.PutAsync($"{ApiOptions.RootUrl}/auth", data.ToStringContent());
+                response.EnsureSuccessStatusCode();
+                string token = await response.Content.ReadAsStringAsync();
+
+                LoginedUser = await UserAdapter.Get(token);
+                LoginedUser.Login = data.Login;
+                LoginedUser.Password = data.NewPassword;
+
+                SavedData = new AuthData() { Login = data.Login, Password = data.NewPassword, RememberMe = true };
+                ((App)App.Current).SetStartPageForLoginedUser();
+            }
+            catch (HttpRequestException)
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    switch (await response.FirstErrorKey())
+                    {
+                        case RequestError.LoginNotFound:
+                            throw new YsmStoreException("Пользователь с таким логином уже существует");
+                        case RequestError.IncorrestLoginOrPassword:
+                            throw new YsmStoreException("Неверный пароль восстановления");
+                    }
+                }
+                else
+                {
+                    throw new YsmStoreException("Не удалось подключиться к серверу");
+                }
+            }
+            finally
+            {
+                response?.Dispose();
+            }
         }
 
         public static void Logout()
@@ -104,9 +190,30 @@ namespace YsmStore.Data
             ((App)App.Current).SetStartPageForLoginedUser();
         }
 
-        public static void SendRecoveryRequest(string email)
+        public static async Task SendRecoveryRequest(string email)
         {
+            HttpResponseMessage response = null;
 
+            try
+            {
+                response = await _client.PutAsync($"{ApiOptions.RootUrl}/auth/{email}", null);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest && await response.FirstErrorKey() == RequestError.LoginNotFound)
+                {
+                    throw new YsmStoreException("Пользователя с таким логином не существует");
+                }
+                else
+                {
+                    throw new YsmStoreException("Не удалось подключиться к серверу");
+                }
+            }
+            finally
+            {
+                response?.Dispose();
+            }
         }
 
         private static string CheckAuthData(AuthData data)

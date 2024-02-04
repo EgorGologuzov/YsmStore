@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Internal;
-using MimeKit.Encodings;
 using YsmStore.API.Data.Exceptions;
 using YsmStore.API.Data.Interfaces;
 using YsmStore.API.Models;
@@ -86,7 +84,7 @@ namespace YsmStore.API.Data.Implementations
             return await Context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.Products)
-                .OrderBy(o => o.Id)
+                .OrderByDescending(o => o.Id)
                 .Where(o => o.CustomerId == customerId)
                 .Skip(offset)
                 .Take(limit)

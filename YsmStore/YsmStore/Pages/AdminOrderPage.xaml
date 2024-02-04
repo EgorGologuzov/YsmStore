@@ -48,8 +48,6 @@
 
                         <Label Style="{StaticResource Text1}" Text="{Binding Model.Id, StringFormat='Код {0}'}" />
 
-                        <Label Style="{StaticResource Text1}" Text="{Binding Model.City, StringFormat='Город: {0}'}" />
-
                         <Label Style="{StaticResource Text1}" Text="{Binding Model.PickUpAdress, StringFormat='Адрес пункта выдачи: {0}'}" />
 
                         <Label Style="{StaticResource Text1}" Text="{Binding Model.PhoneNumber, StringFormat='Контактный телефон: {0}'}" />

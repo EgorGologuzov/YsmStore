@@ -21,35 +21,41 @@ namespace YsmStore.Pages
             this.BindingContext = _data;
         }
 
-        private void SendButton_Tapped(object sender, EventArgs e)
+        private async void SendButton_Tapped(object sender, EventArgs e)
         {
             if (_lastRecoveryTime == null || (DateTime.Now - _lastRecoveryTime).Value.TotalMinutes >= 1)
             {
                 if (_lastRecoveryTime != null)
                 {
-                    DisplayAlert("Сообщение", "Письмо отправлено повторно", "ОК");
+                    await DisplayAlert("Сообщение", "Письмо отправлено повторно", "ОК");
                 }
 
-                _lastRecoveryTime = DateTime.Now;
-                AuthSystem.SendRecoveryRequest(_data.Login);
-                dataStackLayout.IsVisible = true;
+                try
+                {
+                    await AuthSystem.SendRecoveryRequest(_data.Login);
+                    dataStackLayout.IsVisible = true;
+                    _lastRecoveryTime = DateTime.Now;
+                }
+                catch (YsmStoreException ex)
+                {
+                    await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+                }
             }
             else
             {
-                DisplayAlert("Ошибка", "Следующее письмо можно отправить через минуту", "ОК");
+                await DisplayAlert("Ошибка", "Следующее письмо можно отправить через минуту", "ОК");
             }
         }
 
-        private void RecoveryButton_Tapped(object sender, EventArgs e)
+        private async void RecoveryButton_Tapped(object sender, EventArgs e)
         {
             try
             {
-                AuthSystem.Login(_data);
+                await AuthSystem.Login(_data);
             }
             catch (YsmStoreException ex)
             {
-                DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
-                return;
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
         }
     }

@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using YsmStore.Models;
 
 namespace YsmStore.Data
@@ -8,173 +15,372 @@ namespace YsmStore.Data
         private const string NO_FILTER = "[нет фильтра]";
         private const string NO_SORT = "[без сортировки]";
 
-        private static Dictionary<int, Product> _list = new Dictionary<int, Product>();
+        private static HttpClient _client = new HttpClient();
+        private static bool IsBusyStorageQuery = false;
+        private static bool IsBusyProductQuery = false;
 
-        public static int Execute(ProductQuery query)
+        public static async void Execute(ProductQuery query)
         {
-            int count = query.TargetList.Count;
-
-            for (int i = 0; i < query.LoadStep; i++)
+            if (IsBusyProductQuery)
             {
-                Product product = new Product(count + i)
-                {
-                    Title = (query.Filter == NO_FILTER ? "" : query.Filter) + " Model " + (count + i),
-                    Avatar = "https://img.mvideo.ru/Big/30052885bb.jpg",
-                    Price = 250000,
-                    Description = TestingData.TEST_DESCRIPTION,
-                    Quantity = 5
-                };
-
-                _list[product.Id] = product;
-                query.TargetList.Add(product);
+                return;
             }
 
-            return query.TargetList.Count - count;
-        }
+            IsBusyProductQuery = true;
 
-        public static string[] GetAllCategories()
-        {
-            return new string[]
-            {
-                NO_FILTER,
-                "iPhone",
-                "Dyson",
-                "Apple watch",
-                "Macbook",
-                "Sony"
-            };
-        }
+            string finalCategory = string.IsNullOrEmpty(query.Filter) || query.Filter == NO_FILTER ? string.Empty : query.Filter;
+            string finalSort = string.IsNullOrEmpty(query.SortVariant) || query.Filter == NO_SORT ? string.Empty : query.SortVariant;
 
-        public static string[] GetAllSortVariants()
-        {
-            return new string[]
+            var request = new HttpRequestMessage()
             {
-                NO_SORT,
-                "Сначала дешевые",
-                "Сначала дорогие",
-                "Новинки",
-                "Популярные"
-            };
-        }
-
-        public static Product Get(string title, string option1, string option2)
-        {
-            Product product = new Product(100)
-            {
-                Title = title,
-                Avatar = "https://img.mvideo.ru/Big/30052885bb.jpg",
-                Option1 = option1,
-                Option2 = option2,
-                Price = 250000,
-                Description = TestingData.TEST_DESCRIPTION,
-                Quantity = 5
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/query/bycategory" +
+                    $"?offset={query.TargetList.Count}" +
+                    $"&limit={query.LoadStep}" +
+                    $"&category={finalCategory}" +
+                    $"&sortVariant={finalSort}"
+                )
             };
 
-            _list[product.Id] = product;
-            return product;
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось выполнить запрос продукты 0");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = json.FromJson<List<Product>>();
+            query.TargetList.AddRange(result);
+            query.IsEndReached = result.Count < query.LoadStep;
+
+            request.Dispose();
+            response.Dispose();
+
+            IsBusyProductQuery = false;
         }
 
-        public static Option GetOption1(Product product)
+        public static async Task<string[]> GetAllCategories()
         {
-            string name = "Цвет";
-            List<OptionVariant> variants = new List<OptionVariant>()
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/categories")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить категории");
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            request.Dispose();
+            response.Dispose();
+
+            var result = json.FromJson<List<string>>();
+            result.Insert(0, NO_FILTER);
+
+            return result.ToArray();
+        }
+
+        public static async Task<string[]> GetAllSortVariants()
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/sortvariants")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить варианты сортировки");
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            request.Dispose();
+            response.Dispose();
+
+            var result = json.FromJson<List<string>>();
+            result.Insert(0, NO_SORT);
+
+            return result.ToArray();
+        }
+
+        public static async Task<Product> Get(string title, string option1, string option2)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/query/bytitleandoptions" +
+                    $"?title={title}" +
+                    $"&option1={option1}" +
+                    $"&option2={option2}"
+                )
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось выполнить запрос продукт по названию и опциям");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = json.FromJson<Product>();
+
+            request.Dispose();
+            response.Dispose();
+
+            return result;
+        }
+
+        public static async Task<Option> GetOption1(Product product)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/option/{product.Title}/1")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode != HttpStatusCode.OK || string.IsNullOrEmpty(json))
+            {
+                return new Option(null, null, false);
+            }
+
+            JToken jToken = JToken.Parse(json);
+            string[] vars = jToken["variants"].ToObject<string[]>();
+            var optionVariants = new List<OptionVariant>();
+
+            var tasks = vars.Select(v => Get(product.Title, v, product.Option2)).ToList();
+            var result = await Task.WhenAll(tasks);
+
+            for (int i = 0; i < vars.Length; i++)
+            {
+                optionVariants.Add(
+                    new OptionVariant(
+                        vars[i],
+                        result[i] != null && result[i].Quantity > 0,
+                        product.Option1 == vars[i])
+                    );
+            }
+
+            request.Dispose();
+            response.Dispose();
+
+            return new Option(jToken["name"].Value<string>(), optionVariants, true);
+        }
+
+        public static async Task<Option> GetOption2(Product product)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/option/{product.Title}/2")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode != HttpStatusCode.OK || string.IsNullOrEmpty(json))
+            {
+                return new Option(null, null, false);
+            }
+
+            JToken jToken = JToken.Parse(json);
+            string[] vars = jToken["variants"].ToObject<string[]>();
+            var optionVariants = new List<OptionVariant>();
+
+            var tasks = vars.Select(v => Get(product.Title, product.Option1, v)).ToList();
+            var result = await Task.WhenAll(tasks);
+
+            for (int i = 0; i < vars.Length; i++)
+            {
+                optionVariants.Add(
+                    new OptionVariant(
+                        vars[i],
+                        result[i] != null && result[i].Quantity > 0,
+                        product.Option2 == vars[i])
+                    );
+            }
+
+            request.Dispose();
+            response.Dispose();
+
+            return new Option(jToken["name"].Value<string>(), optionVariants, true);
+        }
+
+        public static async Task<Product> Get(int id)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/{id}")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить продукт по коду");
+
+            var json = await response.Content.ReadAsStringAsync();
+            Product result = json.FromJson<Product>();
+
+            request.Dispose();
+            response.Dispose();
+
+            return result;
+        }
+
+        public static async Task<List<ProductAmount>> GetAllProducts(Order order)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/inorder/{order.Id}")
+            };
+
+            await request.AddActualToken();
+
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.SendAsync(request);
+                response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить свойства продукта");
+                var json = await response.Content.ReadAsStringAsync();
+
+                return json.FromJson<List<ProductAmount>>();
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+            }
+        }
+
+        public static async Task<Dictionary<string, string>> GetProperties(Product product)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product/properties/{product.Id}")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return new Dictionary<string, string>();
+            }
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить свойства продукта");
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            request.Dispose();
+            response.Dispose();
+
+            return json.FromJson<Dictionary<string, string>>();
+        }
+
+        public static async void Execute(StorageQuery query)
+        {
+            if (IsBusyStorageQuery)
+            {
+                return;
+            }
+
+            IsBusyStorageQuery = true;
+
+            int id = 0;
+            if (int.TryParse(query.QueryText, out id))
+            {
+                try
                 {
-                    new OptionVariant("Red", true, product.Option1 == "Red"),
-                    new OptionVariant("Green", true, product.Option1 == "Green"),
-                    new OptionVariant("Pink", true, product.Option1 == "Pink"),
-                    new OptionVariant("Gold", false, product.Option1 == "Gold"),
-                    new OptionVariant("Silver", false, product.Option1 == "Silver")
-                };
-
-            return new Option(name, variants, true);
-        }
-
-        public static Option GetOption2(Product product)
-        {
-            string name = "Память";
-            List<OptionVariant> variants = new List<OptionVariant>()
-                {
-                    new OptionVariant("128gb", false, product.Option2 == "128gb"),
-                    new OptionVariant("256gb", true, product.Option2 == "256gb"),
-                    new OptionVariant("512gb", true, product.Option2 == "512gb")
-                };
-
-            return new Option(name, variants, true);
-        }
-
-        public static Product Get(int id)
-        {
-            if (_list.ContainsKey(id))
-                return _list[id];
-
-            Product product = new Product(id)
-            {
-                Title = $"Product {id}",
-                Avatar = "https://img.mvideo.ru/Big/30052885bb.jpg",
-                Price = 250000,
-                Description = TestingData.TEST_DESCRIPTION,
-                Quantity = 5
-            };
-
-            return product;
-        }
-
-        public static List<ProductAmount> GetAllProducts(Order order)
-        {
-            ProductAmount amount1 = new ProductAmount(0, 1);
-            ProductAmount amount2 = new ProductAmount(1, 2);
-
-            return new List<ProductAmount>() { amount1, amount2 };
-        }
-
-        public static Dictionary<string, string> GetProperties(Product product)
-        {
-            return TestingData.TEST_PROPERTIES;
-        }
-
-        public static int Execute(StorageQuery query)
-        {
-            int count = query.TargetList.Count;
-
-            if (string.IsNullOrEmpty(query.QueryText) == false)
-            {
-                int id;
-                if (int.TryParse(query.QueryText, out id))
-                {
-                    query.TargetList.Add(Get(id));
+                    Product result = await Get(id);
+                    query.TargetList.Add(result);
                     query.IsEndReached = true;
-                    return 1;
                 }
-                else
+                catch (YsmStoreException)
                 {
-                    Product product = Get(id);
-                    product.Title = query.QueryText;
-                    query.TargetList.Add(product);
-                    query.IsEndReached = true;
-                    return 1;
                 }
             }
-
-            for (int i = 0; i < query.LoadStep; i++)
+            else
             {
-                query.TargetList.Add(Get(count + i));
+                var request = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"{ApiOptions.RootUrl}/product/query/titlelike" +
+                        $"?offset={query.TargetList.Count}" +
+                        $"&limit={query.LoadStep}" +
+                        $"&title={query.QueryText ?? string.Empty}"
+                    )
+                };
+
+                await request.AddActualToken();
+
+                var response = await _client.SendAsync(request);
+
+                response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось выполнить запрос склада 1");
+
+                var json = await response.Content.ReadAsStringAsync();
+                var result = json.FromJson<List<Product>>();
+                query.TargetList.AddRange(result);
+                query.IsEndReached = result.Count < query.LoadStep;
+
+                request.Dispose();
+                response.Dispose();
             }
 
-            return query.TargetList.Count - count;
+            IsBusyStorageQuery = false;
         }
 
-        public static void Push(Product product, IList<KeyValuePair<string, string>> properties)
+        public static async Task Push(Product product, IList<KeyValuePair<string, string>> properties)
         {
+            string json = product.ToJson();
+            JToken jToken = JToken.Parse(json);
+            jToken["properties"] = JToken.Parse(properties.ToDictionary(p => p.Key, p => p.Value).ToJson());
 
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/product"),
+                Content = new StringContent(jToken.ToString(), Encoding.UTF8, "application/json")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            request.Dispose();
+            response.Dispose();
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось обновить данные, проверьте правильность введенных данных");
         }
 
-        public static void Pull(Product product)
+        public static async Task Pull(Product product)
         {
-            product.Title = $"Product {product.Id}";
-            product.Avatar = "https://img.mvideo.ru/Big/30052885bb.jpg";
-            product.Price = 250000;
-            product.Description = TestingData.TEST_DESCRIPTION;
-            product.Quantity = 5;
+            Product oldData = await Get(product.Id);
+            product.Title = oldData.Title;
+            product.Category = oldData.Category;
+            product.Price = oldData.Price;
+            product.Description = oldData.Description;
+            product.Avatar = oldData.Avatar;
+            product.Option1 = oldData.Option1;
+            product.Option2 = oldData.Option2;
+            product.Quantity = oldData.Quantity;
         }
     }
 }

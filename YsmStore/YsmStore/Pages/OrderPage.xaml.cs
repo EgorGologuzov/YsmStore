@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using YsmStore.Data;
@@ -18,8 +20,33 @@ namespace YsmStore.Pages
         {
             InitializeComponent();
 
+            SetView(customer, products);
+        }
+
+        private async void SetView(Customer customer, IList<ProductAmount> products)
+        {
             _view = new OrderView(products, customer);
+
+            var tasks = _view.Products.Select(p => p.LoadProduct());
+            await Task.WhenAll(tasks);
+            _view.LoadCities();
+
+            _view.PropertyChanged += AlertIfHasNoAdressesInCity;
+
             this.BindingContext = _view;
+        }
+
+        private void AlertIfHasNoAdressesInCity(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(_view.Adresses))
+            {
+                return;
+            }
+
+            if (_view.Adresses == null || _view.Adresses.Length == 0)
+            {
+                DisplayAlert("Сообщение", "Похоже, в вашем городе нет отделений СДЕК (((", "ОК");
+            }
         }
 
         private async void OrderButton_Tapped(object sender, EventArgs e)
@@ -52,7 +79,7 @@ namespace YsmStore.Pages
 
             try
             {
-                OrderAdapter.Push(_view.Model, _view.Products.Models);
+                await OrderAdapter.Push(_view.Model, _view.Products.Models);
                 await DisplayAlert("Сообщение", "Заказа оформлен, вы можете увидеть его в разделе \"Купленные товары\"", "ОК");
                 await Navigation.PopAsync();
             }

@@ -15,75 +15,82 @@
                 </controls:NavigationBar.BarContent>
             </controls:NavigationBar>
             <StackLayout>
+                <StackLayout Padding="10,0">
+                    <Grid ColumnDefinitions="*, *" HeightRequest="80">
+                        <Frame Padding="10,0" Style="{StaticResource RoundedFrame}">
+                            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                <Label
+                                    Style="{StaticResource Text2}"
+                                    Text="От:"
+                                    VerticalOptions="Center" />
+                                <DatePicker
+                                    x:Name="fromDatePicker"
+                                    Date="{Binding Query.StartDate}"
+                                    Style="{StaticResource DatePicker1}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </Frame>
+                        <Frame
+                            Grid.Column="1"
+                            Padding="10,0"
+                            Style="{StaticResource RoundedFrame}">
+                            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                <Label
+                                    Style="{StaticResource Text2}"
+                                    Text="До:"
+                                    VerticalOptions="Center" />
+                                <DatePicker
+                                    x:Name="toDatePicker"
+                                    Date="{Binding Query.EndDate}"
+                                    HorizontalOptions="Center"
+                                    Style="{StaticResource DatePicker1}" />
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+
+                    <Grid HeightRequest="80">
+                        <Frame Padding="25,0" Style="{StaticResource RoundedFrame}">
+                            <StackLayout Orientation="Horizontal">
+                                <Label
+                                    Style="{StaticResource Text2}"
+                                    Text="Статус:"
+                                    VerticalOptions="Center" />
+                                <Picker
+                                    x:Name="statusFilter"
+                                    HorizontalOptions="FillAndExpand"
+                                    ItemsSource="{Binding StatusFilterVariants}"
+                                    SelectedItem="{Binding Query.StatusFilter, Converter={StaticResource statusFilterConverter}}"
+                                    Style="{StaticResource Picker1}" />
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+
+
+                    <Grid ColumnDefinitions="*,100" HeightRequest="80">
+                        <controls:RegularEntry
+                            Keyboard="Numeric"
+                            Placeholder="Код заказа"
+                            Text="{Binding Query.OrderId}"
+                            TextChanged="OrderIdString_TextChanged" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding Search}"
+                            Style="{StaticResource Button1}"
+                            Text="Поиск" />
+                    </Grid>
+                </StackLayout>
                 <CollectionView
                     ItemsSource="{Binding Items}"
                     RemainingItemsThreshold="1"
                     RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
-
-                    <CollectionView.Header>
-
-                        <StackLayout Padding="10,0">
-                            <Grid ColumnDefinitions="*, *">
-                                <Frame Padding="10,0" Style="{StaticResource RoundedFrame}">
-                                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-                                        <Label
-                                            Style="{StaticResource Text2}"
-                                            Text="От:"
-                                            VerticalOptions="Center" />
-                                        <DatePicker
-                                            Date="{Binding Query.StartDate}"
-                                            Style="{StaticResource DatePicker1}"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                </Frame>
-                                <Frame
-                                    Grid.Column="1"
-                                    Padding="10,0"
-                                    Style="{StaticResource RoundedFrame}">
-                                    <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
-                                        <Label
-                                            Style="{StaticResource Text2}"
-                                            Text="До:"
-                                            VerticalOptions="Center" />
-                                        <DatePicker
-                                            Date="{Binding Query.EndDate}"
-                                            HorizontalOptions="Center"
-                                            Style="{StaticResource DatePicker1}" />
-                                    </StackLayout>
-                                </Frame>
-                            </Grid>
-
-                            <Frame Padding="25,0" Style="{StaticResource RoundedFrame}">
-                                <StackLayout Orientation="Horizontal">
-                                    <Label
-                                        Style="{StaticResource Text2}"
-                                        Text="Статус:"
-                                        VerticalOptions="Center" />
-                                    <Picker
-                                        x:Name="statusFilter"
-                                        HorizontalOptions="FillAndExpand"
-                                        ItemsSource="{Binding StatusFilterVariants}"
-                                        SelectedItem="{Binding Query.StatusFilter, Converter={StaticResource statusFilterConverter}}"
-                                        Style="{StaticResource Picker1}" />
-                                </StackLayout>
-                            </Frame>
-
-                            <Grid ColumnDefinitions="*,100">
-                                <controls:RegularEntry
-                                    Keyboard="Numeric"
-                                    Placeholder="Код заказа"
-                                    Text="{Binding Query.OrderId}"
-                                    TextChanged="OrderIdString_TextChanged" />
-                                <Button
-                                    Grid.Column="1"
-                                    Command="{Binding Search}"
-                                    Style="{StaticResource Button1}"
-                                    Text="Поиск" />
-                            </Grid>
-                        </StackLayout>
-
-                    </CollectionView.Header>
-
+                    <CollectionView.EmptyView>
+                        <Label
+                            TextColor="Gray"
+                            HorizontalTextAlignment="Center"
+                            Text="Здесь ничего нет"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Padding="20,10" BackgroundColor="{StaticResource Color1}">

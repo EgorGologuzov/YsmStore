@@ -40,7 +40,7 @@
                         <Picker
                             ItemsSource="{Binding Adresses}"
                             SelectedItem="{Binding Model.PickUpAdress}"
-                            Style="{StaticResource Picker1}" />
+                            Style="{StaticResource Picker1}"/>
 
                         <Label Style="{StaticResource Caption2}" Text="Контактный телефон" />
                         <maskedentry:MaskedEntry
@@ -59,7 +59,6 @@
 
                         <Button
                             Clicked="OrderButton_Tapped"
-                            IsEnabled="{Binding CanOrder}"
                             Style="{StaticResource Button2}"
                             Text="Заказать" />
                     </StackLayout>

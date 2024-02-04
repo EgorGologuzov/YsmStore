@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Sockets;
 using YsmStore.API.Data.Interfaces;
 using YsmStore.API.Models;
@@ -71,7 +72,7 @@ namespace YsmStore.API.Data.Implementations
         public async Task<Product> Get(string title, string option1, string option2)
         {
             return await Context.Products
-                .Where(p => p.Title == title && p.Option1 == option1 && p.Option2 == option2)
+                .Where(p => p.Title == title && p.Option1 == (option1 ?? string.Empty) && p.Option2 == (option2 ?? string.Empty))
                 .FirstOrDefaultAsync();
         }
 
@@ -118,7 +119,7 @@ namespace YsmStore.API.Data.Implementations
         {
             return await Context.Products
                 .OrderBy(p => p.Id)
-                .Where(p => p.Title.StartsWith(title))
+                .Where(p => EF.Functions.ILike(p.Title, $"{title}%"))
                 .Skip(offset)
                 .Take(limit)
                 .ToListAsync();

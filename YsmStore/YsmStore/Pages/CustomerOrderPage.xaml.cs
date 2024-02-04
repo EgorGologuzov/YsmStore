@@ -14,8 +14,13 @@ namespace YsmStore.Pages
         public CustomerOrderPage(Order order)
         {
             InitializeComponent();
+            SetView(order);
+        }
 
+        private async void SetView(Order order)
+        {
             _view = new OrderView(order);
+            await _view.LoadProducts();
             this.BindingContext = _view;
         }
 

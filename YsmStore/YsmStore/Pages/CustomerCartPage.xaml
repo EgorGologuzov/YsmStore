@@ -20,9 +20,7 @@
                 <StackLayout>
                     <controls:ProductAmountListView
                         ItemsSource="{Binding Items}"
-                        ProductTapped="Product_Tapped"
-                        RemainingItemsThreshold="1"
-                        RemainingItemsThresholdReachedCommand="{Binding LoadNext}" />
+                        ProductTapped="Product_Tapped"/>
                 </StackLayout>
 
                 <Button

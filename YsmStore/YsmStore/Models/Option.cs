@@ -12,7 +12,7 @@ namespace YsmStore.Models
         public Option(string name, IList<OptionVariant> variants, bool isSet)
         {
             Name = name;
-            Variants = new ReadOnlyCollection<OptionVariant>(variants);
+            Variants = new ReadOnlyCollection<OptionVariant>(variants ?? new List<OptionVariant>());
             IsSet = isSet;
         }
     }

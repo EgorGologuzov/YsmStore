@@ -1,32 +1,68 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 
-<CollectionView xmlns="http://xamarin.com/schemas/2014/forms" 
-                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                x:Class="YsmStore.Controls.ProductAmountListView" 
-                BackgroundColor="{StaticResource Color1}"
-                x:Name="thisCollectionView">
+<CollectionView
+    x:Class="YsmStore.Controls.ProductAmountListView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="thisCollectionView"
+    BackgroundColor="{StaticResource Color1}">
+    <CollectionView.EmptyView>
+        <Label
+        TextColor="Gray"
+        HorizontalTextAlignment="Center"
+        Text="Здесь ничего нет"
+        VerticalOptions="Center"
+        VerticalTextAlignment="Center" />
+    </CollectionView.EmptyView>
     <CollectionView.ItemTemplate>
         <DataTemplate>
-            <StackLayout Padding="0, 20">
+            <StackLayout Padding="0,20">
                 <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="Product_Tapped"/>
+                    <TapGestureRecognizer Tapped="Product_Tapped" />
                 </StackLayout.GestureRecognizers>
                 <Grid ColumnDefinitions="100, *" RowDefinitions="100">
-                    <Frame x:Name="frame" Style="{StaticResource RoundedFrame}" BackgroundColor="{StaticResource Color2}" Padding="0">
-                        <Image Source="{Binding Product.Avatar}"/>
+                    <Frame
+                        x:Name="frame"
+                        Padding="0"
+                        BackgroundColor="{StaticResource Color2}"
+                        Style="{StaticResource RoundedFrame}">
+                        <Image Aspect="AspectFill" Source="{Binding Product.Avatar}" />
                     </Frame>
-                    <Label Text="{Binding Info}" Style="{StaticResource Caption2}" VerticalOptions="Center" Grid.Column="1"/>
+                    <Label
+                        Grid.Column="1"
+                        Style="{StaticResource Caption2}"
+                        Text="{Binding Info}"
+                        VerticalOptions="Center" />
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,2*">
-                    <Button Text="-" Style="{StaticResource Button2}" Command="{Binding RemoveOne}"/>
-                    <Label Text="{Binding Model.Amount}" Style="{StaticResource Text2}" VerticalOptions="Center"
-                           Grid.Column="1" HorizontalOptions="Center"/>
-                    <Button Text="+" Grid.Column="2" Style="{StaticResource Button2}" Command="{Binding AddOne}"/>
-                    <Button Text="Удалить" Grid.Column="3" Style="{StaticResource Button2}" BackgroundColor="Red"
-                            Clicked="DeleteButton_Tapped"/>
+                    <Button
+                        Command="{Binding RemoveOne}"
+                        Style="{StaticResource Button2}"
+                        Text="-" />
+                    <Label
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource Text2}"
+                        Text="{Binding Model.Amount}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding AddOne}"
+                        Style="{StaticResource Button2}"
+                        Text="+" />
+                    <Button
+                        Grid.Column="3"
+                        BackgroundColor="Red"
+                        Clicked="DeleteButton_Tapped"
+                        Style="{StaticResource Button2}"
+                        Text="Удалить" />
                 </Grid>
-                <Label Text="{Binding Product.Quantity, StringFormat='Осталось: {0:F0} шт.'}" Style="{StaticResource Text2}"
-                       TextColor="Red" HorizontalOptions="Center" IsVisible="{Binding IsAmountMoreThanQuantity}"/>
+                <Label
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsAmountMoreThanQuantity}"
+                    Style="{StaticResource Text2}"
+                    Text="{Binding Product.Quantity, StringFormat='Осталось: {0:F0} шт.'}"
+                    TextColor="Red" />
             </StackLayout>
         </DataTemplate>
     </CollectionView.ItemTemplate>

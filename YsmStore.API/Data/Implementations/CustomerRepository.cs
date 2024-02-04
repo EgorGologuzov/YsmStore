@@ -103,7 +103,7 @@ namespace YsmStore.API.Data.Implementations
 
             if (pic is null)
             {
-                await Context.ProductInCarts.AddAsync(new() { CustomerId = customerId, ProductId = productId, Amount = amount });
+                await Context.ProductInCarts.AddAsync(new() { CustomerId = customerId, ProductId = productId, Amount = amount, AddDateTime = DateTime.Now });
             }
             else
             {
@@ -135,7 +135,7 @@ namespace YsmStore.API.Data.Implementations
             }
             else if (amount != 0)
             {
-                await Context.ProductInCarts.AddAsync(new() { CustomerId = customerId, ProductId = productId, Amount = amount });
+                await Context.ProductInCarts.AddAsync(new() { CustomerId = customerId, ProductId = productId, Amount = amount, AddDateTime = DateTime.Now });
             }
 
             await Context.SaveChangesAsync();
@@ -144,6 +144,7 @@ namespace YsmStore.API.Data.Implementations
         public async Task<IList<ProductInCart>> GetCart(Guid id)
         {
             IList<ProductInCart> list = await Context.ProductInCarts
+                .OrderByDescending(pic => pic.AddDateTime)
                 .Where(pic => pic.CustomerId == id)
                 .ToListAsync();
 

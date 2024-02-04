@@ -53,7 +53,7 @@ namespace YsmStore.API.Controllers
 
         [Authorize]
         [HttpGet("query/bycategory")]
-        public async Task<IActionResult> GetByCategory([FromBody] ProductByCategoryRequestDto data)
+        public async Task<IActionResult> GetByCategory([FromQuery] ProductByCategoryRequestDto data)
         {
             if (!ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace YsmStore.API.Controllers
 
         [Authorize]
         [HttpGet("query/bytitleandoptions")]
-        public async Task<IActionResult> GetByTitleAndOptions([FromBody] ProductByTitleAndOptionsDto data)
+        public async Task<IActionResult> GetByTitleAndOptions([FromQuery] ProductByTitleAndOptionsDto data)
         {
             if (!ModelState.IsValid)
             {
@@ -144,14 +144,14 @@ namespace YsmStore.API.Controllers
 
         [Authorize]
         [HttpGet("query/titlelike")]
-        public async Task<IActionResult> GetWithTitleLike([FromBody] ProductByTitleRequestDto data)
+        public async Task<IActionResult> GetWithTitleLike([FromQuery] ProductByTitleRequestDto data)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IList<Product> result = await _repos.GetWithTitleLike(data.Title, data.Offset, data.Limit);
+            IList<Product> result = await _repos.GetWithTitleLike(data.Title ?? string.Empty, data.Offset, data.Limit);
             IList<ProductReturnDto> returnResult = Mapper.Map<IList<ProductReturnDto>>(result);
 
             return Ok(returnResult);

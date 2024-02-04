@@ -56,9 +56,12 @@ builder.Services.AddControllersWithViews();
 // Настройки отправки email-ов
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+// Настройки отправки email-ов
+builder.Services.Configure<DomainSettings>(builder.Configuration.GetSection("DomainSettings"));
+
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

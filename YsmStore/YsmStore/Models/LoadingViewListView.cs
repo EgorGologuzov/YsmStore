@@ -8,52 +8,61 @@ namespace YsmStore.Models
         where TView : YsmStoreView<TModel>
         where TQuery : Query, new()
     {
-        public LoadingViewListView(Func<TQuery, int> loadMethod)
-        {
-            _items = new ViewList<TModel, TView>();
-            _query = new TQuery();
-            _query.TargetList = _items.Models;
-            _method = loadMethod;
-            _loadNext = new Command(LoadNext_Execute, LoadNext_CanExecute);
-        }
-
         private ViewList<TModel, TView> _items;
-        public ViewList<TModel, TView> Items
-        {
-            get => _items;
-        }
-
         private TQuery _query;
-        public TQuery Query
-        {
-            get => _query;
-        }
-
         private Func<TQuery, int> _method;
-        public Func<TQuery, int> Method
-        {
-            get => _method;
-        }
-
+        private Action<TQuery> _methodAsync;
         private Command _loadNext;
+        public ViewList<TModel, TView> Items { get => _items; }
+        public TQuery Query { get => _query; }
+        public Func<TQuery, int> Method { get => _method; }
+        public Action<TQuery> MethodAsync { get => _methodAsync; }
         public Command LoadNext
         {
             get => _loadNext;
             set { _loadNext = value; InvokePropertyChanged(nameof(LoadNext)); }
         }
+        public LoadingViewListView(Func<TQuery, int> loadMethod)
+        {
+            Initialize();
+            _method = loadMethod;
+        }
 
+        public LoadingViewListView(Action<TQuery> loadMethod)
+        {
+            Initialize();
+            _methodAsync = loadMethod;
+        }
+
+        private void Initialize()
+        {
+            _items = new ViewList<TModel, TView>();
+            _query = new TQuery();
+            _query.TargetList = _items.Models;
+            _loadNext = new Command(LoadNext_Execute, LoadNext_CanExecute);
+        }
         private void LoadNext_Execute()
         {
-            if (Query.IsEndReached == false)
+            if (Query.IsEndReached)
+            {
+                return;
+            }
+
+            if (Method != null)
             {
                 Method.Invoke(Query);
+            }
+
+            if (MethodAsync != null)
+            {
+                MethodAsync.Invoke(Query);
             }
         }
 
         private bool LoadNext_CanExecute()
         {
             if (Items == null || Query == null)
-                return false;
+                throw new YsmStoreException("Items or Query in LoadingViewListView is null");
             return true;
         }
     }

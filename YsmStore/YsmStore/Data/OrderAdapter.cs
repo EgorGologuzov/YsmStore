@@ -1,118 +1,261 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using YsmStore.Models;
 
 namespace YsmStore.Data
 {
     public static class OrderAdapter
     {
-        private static Dictionary<int, Order> _list = new Dictionary<int, Order>();
-        public static int LocalIdCounter = -1;
+        private static HttpClient _client = new HttpClient();
+
+        private static bool IsBusyCustomerOrdersQuery = false;
+        private static bool IsBusyAdminOrdersQuery = false;
 
         public static Order Create(Customer customer)
         {
-            Order order = new Order(LocalIdCounter);
-            LocalIdCounter--;
-            order.CustomerEmail = customer.Login;
-
-            return order;
+            return new Order();
         }
 
-        public static Order Get(int id)
+        public static async Task<Order> Get(int id)
         {
-            Order order = new Order(id)
+            var request = new HttpRequestMessage()
             {
-                CustomerEmail = $"login@gmail.com",
-                OrderDate = DateTime.Now,
-                City = "Нижний Тагил",
-                PickUpAdress = "Нижний Тагил, Улица1, дом1",
-                PhoneNumber = "+7 (999) 999-99-00",
-                DeliveryDate = DateTime.Now + TimeSpan.FromDays(14),
-                Status = OrderStatus.Processed
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/order/{id}")
             };
 
-            _list[id] = order;
+            await request.AddActualToken();
 
-            return order;
-        }
+            HttpResponseMessage response = null;
 
-        public static string[] GetCities()
-        {
-            return new string[]
+            try
             {
-                "Нижний Тагил",
-                "Москва",
-                "Санкт-Петербург"
-            };
+                response = await _client.SendAsync(request);
+                response.ThrowYsmStoreExceptionIfNotSuccessStatusCode($"Не удалось загрузить заказ по коду {id}");
+                string json = await response.Content.ReadAsStringAsync();
+
+                return json.FromJson<Order>();
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+            }
         }
 
-        public static string[] GetAdresses(string city)
+        public static async Task<string[]> GetCities()
         {
-            if (city == string.Empty || city == null)
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/location/cities")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode("Не удалось загрузить города");
+
+            var json = await response.Content.ReadAsStringAsync();
+            request.Dispose();
+            response.Dispose();
+
+            var result = JArray.Parse(json).Select(l => l["city"].Value<string>()).ToArray();
+            Array.Sort(result);
+
+            return result.ToArray();
+        }
+
+        public static async Task<string[]> GetAdresses(string city)
+        {
+            if (string.IsNullOrEmpty(city))
+            {
                 return new string[0];
-
-            return new string[]
-            {
-                $"{city}, Улица1, Дом1",
-                $"{city}, Улица2, Дом2",
-                $"{city}, Улица3, Дом3",
-                $"{city}, Улица4, Дом4",
-                $"{city}, Улица5, Дом5",
-                $"{city}, Улица6, Дом6"
-            };
-        }
-
-        public static void Push(Order order, IList<ProductAmount> orderedProducts)
-        {
-
-        }
-
-        public static int Execute(CustomerOrdersQuery query)
-        {
-            int count = query.TargetList.Count;
-
-            for (int i = 0; i < query.LoadStep; i++)
-            {
-                Order order = Get(count + i);
-                order.CustomerEmail = $"login_{query.CustomerToken}@gmail.com";
-                query.TargetList.Add(order);
             }
 
-            return query.TargetList.Count - count;
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/location/adresses/{city}")
+            };
+
+            await request.AddActualToken();
+
+            var response = await _client.SendAsync(request);
+
+            response.ThrowYsmStoreExceptionIfNotSuccessStatusCode($"Не удалось загрузить адреса для города {city}");
+
+            var json = await response.Content.ReadAsStringAsync();
+            request.Dispose();
+            response.Dispose();
+
+            return json.FromJson<string[]>();
         }
 
-        public static void Push(Order order)
+        public static async Task Push(Order order, IList<ProductAmount> orderedProducts)
         {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/order"),
+                Content = new { PickUpAdress = order.PickUpAdress, PhoneNumber = order.PhoneNumber, Products = orderedProducts }.ToStringContent()
+            };
 
+            await request.AddActualToken();
+
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new YsmStoreException("Не удалось создать заказ, попробуйте позже");
+                }
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+            }
         }
 
-        public static int Execute(AdminOrdersQuery query)
+        public static async void Execute(CustomerOrdersQuery query)
         {
-            int count = query.TargetList.Count;
+            if (IsBusyCustomerOrdersQuery)
+            {
+                return;
+            }
+
+            IsBusyCustomerOrdersQuery = true;
+
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/order/query/customerorders" +
+                $"?offset={query.TargetList.Count}" +
+                $"&limit={query.LoadStep}" +
+                $"&customerId={query.CustomerId}")
+            };
+
+            await request.AddActualToken();
+
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.SendAsync(request);
+                response.ThrowYsmStoreExceptionIfNotSuccessStatusCode($"Не удалось загрузить список заказов клиента");
+                var json = await response.Content.ReadAsStringAsync();
+                var result = json.FromJson<List<Order>>();
+                query.TargetList.AddRange(result);
+                query.IsEndReached = result.Count < query.LoadStep;
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+                IsBusyCustomerOrdersQuery = false;
+            }
+        }
+
+        public static async Task Push(Order order)
+        {
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/order"),
+                Content = order.ToStringContent()
+            };
+
+            await request.AddActualToken();
+
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new YsmStoreException("Не удалось обновить заказ, проверьте правильность введенных данных");
+                }
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+            }
+        }
+
+        public static async void Execute(AdminOrdersQuery query)
+        {
+            if (IsBusyAdminOrdersQuery)
+            {
+                return;
+            }
+
+            IsBusyAdminOrdersQuery = true;
 
             if (query.OrderId != null)
             {
-                query.TargetList.Add(Get(query.OrderId.Value));
-                query.IsEndReached = true;
-            }
-            else
-            {
-                for (int i = 0; i < query.LoadStep; i++)
+                try
                 {
-                    Order order = Get(count + i);
-                    order.Status = query.StatusFilter == null ? order.Status : query.StatusFilter.Value;
-                    order.OrderDate = query.EndDate;
-                    query.TargetList.Add(order);
+                    Order result = await Get(query.OrderId.Value);
+                    query.TargetList.Add(result);
+                    query.IsEndReached = true;
                 }
+                catch (YsmStoreException) { }
+
+                IsBusyAdminOrdersQuery = false;
+                return;
             }
 
-            return query.TargetList.Count - count;
+            var request = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{ApiOptions.RootUrl}/order/query/bystatusbetween" +
+                    $"?offset={query.TargetList.Count}" +
+                    $"&limit={query.LoadStep}" +
+                    $"&statusFilter={query.StatusFilter}" +
+                    $"&startDate={query.StartDate.ToString("s")}" +
+                    $"&endDate={query.EndDate.ToString("s")}"
+                )
+            };
+
+            await request.AddActualToken();
+
+            HttpResponseMessage response = null;
+
+            try
+            {
+                response = await _client.SendAsync(request);
+                response.ThrowYsmStoreExceptionIfNotSuccessStatusCode($"Не удалось загрузить список для администратора");
+                var json = await response.Content.ReadAsStringAsync();
+                var result = json.FromJson<List<Order>>();
+                query.TargetList.AddRange(result);
+                query.IsEndReached = result.Count < query.LoadStep;
+            }
+            finally
+            {
+                request?.Dispose();
+                response?.Dispose();
+                IsBusyAdminOrdersQuery = false;
+            }
         }
 
-        public static void Pull(Order order)
+        public static async Task Pull(Order order)
         {
-            order.OrderDate = DateTime.Now;
-            order.Status = OrderStatus.Processed;
+            Order oldData = await Get(order.Id);
+            order.DeliveryDate = oldData.DeliveryDate;
+            order.Status = oldData.Status;
         }
     }
 }

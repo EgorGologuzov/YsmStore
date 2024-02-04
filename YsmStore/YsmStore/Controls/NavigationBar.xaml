@@ -1,16 +1,41 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="YsmStore.Controls.NavigationBar">
-  <ContentView.Content>
-        <Frame Style="{StaticResource RoundedFrame}" BackgroundColor="{StaticResource Color2}">
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="YsmStore.Controls.NavigationBar"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentView.Content>
+        <Frame BackgroundColor="{StaticResource Color2}" Style="{StaticResource RoundedFrame}">
             <StackLayout>
-                <Grid ColumnDefinitions="1*,3*,1*" RowDefinitions="70">
-                    <ImageButton x:Name="backButton" Source="back.png" BackgroundColor="#00000000" Margin="20" Clicked="BackButton_Tapped"/>
-                    <Image Source="Logo.png" Grid.Column="1"/>
-                    <Frame x:Name="rightButtonFrame" Grid.Column="2" Padding="0" BackgroundColor="#00000000"/>
+                <Grid ColumnDefinitions="1*,1*,2*,1*" RowDefinitions="70">
+                    <ImageButton
+                        x:Name="backButton"
+                        Margin="20"
+                        BackgroundColor="#00000000"
+                        Clicked="BackButton_Tapped"
+                        Source="back.png" />
+                    <Frame
+                        Grid.Column="1"
+                        Padding="10"
+                        BackgroundColor="#00000000">
+                        <Image Grid.Column="1" Source="Logo_2.png" />
+                    </Frame>
+                    <Label
+                        Grid.Column="2"
+                        FontAttributes="Bold"
+                        FontSize="25"
+                        Text="TechoCore"
+                        TextColor="{StaticResource Color4}"
+                        VerticalOptions="Center" />
+                    <Frame
+                        x:Name="rightButtonFrame"
+                        Grid.Column="3"
+                        Padding="0"
+                        BackgroundColor="#00000000" />
                 </Grid>
-                <Frame x:Name="contentFrame" Padding="0" BackgroundColor="#00000000"/>
+                <Frame
+                    x:Name="contentFrame"
+                    Padding="0"
+                    BackgroundColor="#00000000" />
             </StackLayout>
         </Frame>
     </ContentView.Content>

@@ -24,5 +24,11 @@ namespace YsmStore.Pages
             Customer customer = ((CustomerView)((Button)sender).BindingContext).Model;
             Navigation.PushAsync(new CustomerOrdersPage(customer));
         }
+
+        private void SearchButton_Tapped(object sender, EventArgs e)
+        {
+            _list.Query.EmailText = emailEntry.Text;
+            _list.Search.Execute(null);
+        }
     }
 }

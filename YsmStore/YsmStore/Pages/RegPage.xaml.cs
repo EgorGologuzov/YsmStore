@@ -20,15 +20,15 @@ namespace YsmStore.Pages
             this.BindingContext = _data;
         }
 
-        private void RegButton_Tapped(object sender, EventArgs e)
+        private async void RegButton_Tapped(object sender, EventArgs e)
         {
             try
             {
-                AuthSystem.Login(_data);
+                await AuthSystem.Login(_data);
             }
             catch (YsmStoreException ex)
             {
-                DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
         }
     }

@@ -15,26 +15,29 @@
                 </controls:NavigationBar.BarContent>
             </controls:NavigationBar>
             <StackLayout>
+                <Grid
+                    Padding="10,0"
+                    ColumnDefinitions="*,100"
+                    HeightRequest="70">
+                    <controls:RegularEntry Placeholder="Код или название товара" Text="{Binding Query.QueryText}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding Search}"
+                        Style="{StaticResource Button1}"
+                        Text="Поиск" />
+                </Grid>
                 <CollectionView
                     ItemsSource="{Binding Items}"
                     RemainingItemsThreshold="1"
                     RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
-
-                    <CollectionView.Header>
-
-                        <StackLayout Padding="10,0">
-                            <Grid ColumnDefinitions="*,100">
-                                <controls:RegularEntry Placeholder="Код или название товара" Text="{Binding Query.QueryText}" />
-                                <Button
-                                    Grid.Column="1"
-                                    Command="{Binding Search}"
-                                    Style="{StaticResource Button1}"
-                                    Text="Поиск" />
-                            </Grid>
-                        </StackLayout>
-
-                    </CollectionView.Header>
-
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Text="Здесь ничего нет"
+                            TextColor="Gray"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid

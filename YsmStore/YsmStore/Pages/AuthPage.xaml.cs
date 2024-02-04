@@ -30,15 +30,15 @@ namespace YsmStore.Pages
             Navigation.PushAsync(new ForgotPasswordPage(_data));
         }
 
-        private void LoginButton_Tapped(object sender, EventArgs e)
+        private async void LoginButton_Tapped(object sender, EventArgs e)
         {
             try
             {
-                AuthSystem.Login(_data);
+                await AuthSystem.Login(_data);
             }
             catch (YsmStoreException ex)
             {
-                DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
         }
     }

@@ -7,9 +7,6 @@
     xmlns:models="clr-namespace:YsmStore.Models"
     BackgroundColor="{StaticResource Color1}"
     NavigationPage.HasNavigationBar="False">
-    <ContentPage.BindingContext>
-        <models:CustomerListView />
-    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
             <controls:NavigationBar>
@@ -18,22 +15,33 @@
                 </controls:NavigationBar.BarContent>
             </controls:NavigationBar>
             <StackLayout>
+                <Grid
+                    Padding="10,0"
+                    ColumnDefinitions="*,100"
+                    HeightRequest="70">
+                    <controls:RegularEntry
+                        x:Name="emailEntry"
+                        Placeholder="Почта пользователя"
+                        Text="{Binding Query.EmailText}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding Search}"
+                        Style="{StaticResource Button1}"
+                        Text="Поиск" />
+                </Grid>
                 <CollectionView
                     x:Name="collectionView"
-                    EmptyView="Пусто"
                     ItemsSource="{Binding Items}"
                     RemainingItemsThreshold="1"
                     RemainingItemsThresholdReachedCommand="{Binding LoadNext}">
-                    <CollectionView.Header>
-                        <Grid Padding="10,0" ColumnDefinitions="*,100">
-                            <controls:RegularEntry Placeholder="Почта пользователя" Text="{Binding Query.EmailText}" />
-                            <Button
-                                Grid.Column="1"
-                                Command="{Binding Search}"
-                                Style="{StaticResource Button1}"
-                                Text="Поиск" />
-                        </Grid>
-                    </CollectionView.Header>
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Text="Здесь ничего нет"
+                            TextColor="Gray"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame Padding="20,10,20,10" BackgroundColor="{StaticResource Color1}">

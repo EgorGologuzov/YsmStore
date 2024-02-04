@@ -59,6 +59,7 @@ namespace YsmStore.API.Controllers
             }
         }
 
+        [NonAction]
         public IActionResult CdekApiBadRequest()
         {
             ModelState.AddModelError(RequestError.CdekApiBadRequest.Code, RequestError.CdekApiBadRequest.Message);

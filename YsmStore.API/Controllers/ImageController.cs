@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using YsmStore.API.Utils;
 
 namespace YsmStore.API.Controllers
@@ -8,15 +9,19 @@ namespace YsmStore.API.Controllers
     [Route("api/image")]
     public class ImageController : ControllerBase
     {
-        private const string domain = "technocorestore.ru";
         private readonly string[] _availableTypes = new string[] { "jpeg", "png" };
 
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IOptions<DomainSettings> _domainSettings;
         private readonly ILogger<ImageController> _logger;
 
-        public ImageController(IWebHostEnvironment hostEnvironment, ILogger<ImageController> logger)
+        public ImageController(
+            IWebHostEnvironment hostEnvironment,
+            IOptions<DomainSettings> domainSettings,
+            ILogger<ImageController> logger)
         {
             _hostEnvironment = hostEnvironment;
+            _domainSettings = domainSettings;
             _logger = logger;
         }
 
@@ -50,7 +55,7 @@ namespace YsmStore.API.Controllers
 
             Guid id = Guid.NewGuid();
             string fileName = Path.ChangeExtension(id.ToString(), type[1]);
-            string imageUrl = $"https://{domain}/api/image/{fileName}";
+            string imageUrl = $"{_domainSettings.Value.Domain}/api/image/{fileName}";
 
             string filePath = Path.Combine(_hostEnvironment.ContentRootPath, "Content", fileName);
 

@@ -17,9 +17,21 @@ namespace YsmStore.Pages
         public AdminProductPage(Product product)
         {
             InitializeComponent();
+            SetView(product);
+        }
 
+        private async void SetView(Product product)
+        {
             _view = new ProductView(product);
+            await _view.LoadOptions();
             this.BindingContext = _view;
+        }
+
+        protected override async void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            await ProductAdapter.Pull(_view.Model);
         }
 
         private async void AddPropertyButton_Tapped(object sender, EventArgs e)
@@ -53,16 +65,16 @@ namespace YsmStore.Pages
             _view.Properties.Remove((KeyValuePair<string, string>)propertyView.SelectedItem);
         }
 
-        private void SaveButton_Tapped(object sender, EventArgs e)
+        private async void SaveButton_Tapped(object sender, EventArgs e)
         {
             try
             {
-                ProductAdapter.Push(_view.Model, _view.Properties);
-                Navigation.PopAsync();
+                await ProductAdapter.Push(_view.Model, _view.Properties);
+                await Navigation.PopAsync();
             }
             catch (YsmStoreException ex)
             {
-                DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
         }
 
@@ -77,26 +89,19 @@ namespace YsmStore.Pages
                 return;
             }
 
-            ImageSource src = ImageSource.FromStream(() => stream);
-            string url = PhotoAdapter.Upload(src);
-
-            if (string.IsNullOrEmpty(url))
+            try
             {
-                avatarImage.Source = src;
+                _view.Model.Avatar = await PhotoAdapter.Upload(stream);
             }
-            else
+            catch (YsmStoreException ex)
             {
-                _view.Model.Avatar = url;
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
-
-            (sender as Button).IsEnabled = true;
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            ProductAdapter.Pull(_view.Model);
+            finally
+            {
+                stream.Dispose();
+                (sender as Button).IsEnabled = true;
+            }
         }
     }
 }

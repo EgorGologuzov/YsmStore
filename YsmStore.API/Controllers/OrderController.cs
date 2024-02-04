@@ -114,7 +114,7 @@ namespace YsmStore.API.Controllers
 
         [Authorize]
         [HttpGet("query/customerorders")]
-        public async Task<IActionResult> GetCustomerOrders([FromBody] CustomerOrdersRequestDto data)
+        public async Task<IActionResult> GetCustomerOrders([FromQuery] CustomerOrdersRequestDto data)
         {
             string role = GetClaimValue(ClaimTypes.Role);
 
@@ -136,7 +136,7 @@ namespace YsmStore.API.Controllers
 
         [Authorize(Roles = ClientRoles.Admin)]
         [HttpGet("query/bystatusbetween")]
-        public async Task<IActionResult> GetOrdersByStatusBetween([FromBody] OrdersRequestDto data)
+        public async Task<IActionResult> GetOrdersByStatusBetween([FromQuery] OrdersRequestDto data)
         {
             IList<Order> result = await _repos.GetByStatusBetween(data.StatusFilter, data.StartDate, data.EndDate, data.Offset, data.Limit);
             IList<OrderReturnDto> returnResult = Mapper.Map<IList<OrderReturnDto>>(result);

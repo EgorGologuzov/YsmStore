@@ -19,10 +19,17 @@ namespace YsmStore.Pages
             InitializeComponent();
 
             _view = new CartView((Customer)AuthSystem.LoginedUser);
+            _view.Items.CollectionChanged += OnProductCollectionChanged;
             BindingContext = _view;
         }
 
         private void OnProductCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            HandleNewItems(e);
+            HandleOldItems(e);
+        }
+
+        private void HandleNewItems(NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems == null)
                 return;
@@ -37,14 +44,32 @@ namespace YsmStore.Pages
             }
         }
 
-        private void UpdateProductAmountInCart(ProductAmount productAmount)
+        private void HandleOldItems(NotifyCollectionChangedEventArgs e)
         {
-            UserAdapter.SetProductAmountInCart(_view.Customer, productAmount);
+            if (e.OldItems == null)
+                return;
+
+            foreach (ProductAmountView view in e.OldItems)
+            {
+                view.Model.Amount = 0;
+            }
+        }
+
+        private async void UpdateProductAmountInCart(ProductAmount productAmount)
+        {
+            try
+            {
+                await UserAdapter.SetProductAmountInCart(_view.Customer, productAmount);
+            }
+            catch (YsmStoreException ex)
+            {
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+            }
         }
 
         private void OrderButton_Tapped(object sender, EventArgs e)
         {
-            IList<ProductAmount> cart = UserAdapter.GetCart(_view.Customer);
+            IList<ProductAmount> cart = _view.Items.Models;
             Navigation.PushAsync(new OrderPage(_view.Customer, cart));
         }
 

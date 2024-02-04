@@ -13,8 +13,8 @@ using YsmStore.API.Data;
 namespace YsmStore.API.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20240120181536_Properties")]
-    partial class Properties
+    [Migration("20240203124602_Indexes")]
+    partial class Indexes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,6 +168,11 @@ namespace YsmStore.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Category");
+
+                    b.HasIndex("Title", "Option1", "Option2")
+                        .IsUnique();
+
                     b.ToTable("Products");
                 });
 
@@ -178,6 +183,9 @@ namespace YsmStore.API.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("AddDateTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Amount")
                         .HasColumnType("integer");

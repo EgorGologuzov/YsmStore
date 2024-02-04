@@ -4,7 +4,6 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:YsmStore.Controls"
-    xmlns:models="clr-namespace:YsmStore.Models"
     BackgroundColor="{StaticResource Color1}"
     NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
@@ -26,7 +25,7 @@
                         <Image
                             x:Name="avatarImage"
                             Aspect="AspectFill"
-                            Source="{Binding Model.Avatar}" />
+                            Source="{Binding Model.Avatar}" HeightRequest="350" />
                     </Frame>
                     <Button
                         Clicked="ChooseImageButton_Tapped"
@@ -35,15 +34,15 @@
 
                     <Label Style="{StaticResource Caption2}" Text="Название" />
                     <Entry
+                        IsReadOnly="True"
                         Placeholder="Название"
                         Style="{StaticResource Entry1}"
                         Text="{Binding Model.Title}" />
 
                     <StackLayout
-                        BindingContext="{Binding Option1}"
                         HeightRequest="100"
-                        IsVisible="{Binding IsSet}">
-                        <Label Style="{StaticResource Caption2}" Text="{Binding Name}" />
+                        IsVisible="{Binding Option1.IsSet}">
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Option1.Name}" />
                         <Entry
                             Placeholder="Значение опции 1"
                             Style="{StaticResource Entry1}"
@@ -51,10 +50,9 @@
                     </StackLayout>
 
                     <StackLayout
-                        BindingContext="{Binding Option2}"
                         HeightRequest="100"
-                        IsVisible="{Binding IsSet}">
-                        <Label Style="{StaticResource Caption2}" Text="{Binding Name}" />
+                        IsVisible="{Binding Option2.IsSet}">
+                        <Label Style="{StaticResource Caption2}" Text="{Binding Option2.Name}" />
                         <Entry
                             Placeholder="Значение опции 2"
                             Style="{StaticResource Entry1}"
@@ -66,7 +64,7 @@
                         Keyboard="Numeric"
                         Placeholder="Цена продукта"
                         Style="{StaticResource Entry1}"
-                        Text="{Binding Model.Price}" />
+                        Text="{Binding PriceString}" />
 
                     <Label Style="{StaticResource Caption2}" Text="На складе" />
                     <Entry

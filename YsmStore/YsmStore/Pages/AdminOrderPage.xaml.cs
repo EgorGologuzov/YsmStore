@@ -16,28 +16,34 @@ namespace YsmStore.Pages
         {
             InitializeComponent();
 
+            SetView(order);
+        }
+
+        private async void SetView(Order order)
+        {
             _view = new OrderView(order);
+            await _view.LoadProducts();
             this.BindingContext = _view;
         }
 
-        private void SaveButton_Tapped(object sender, EventArgs e)
+        private async void SaveButton_Tapped(object sender, EventArgs e)
         {
             try
             {
-                OrderAdapter.Push(_view.Model);
-                Navigation.PopAsync();
+                await OrderAdapter.Push(_view.Model);
+                await Navigation.PopAsync();
             }
             catch (YsmStoreException ex)
             {
-                DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
+                await DisplayAlert(ex.Caption, ex.Message, ex.OkButtonText);
             }
         }
 
-        protected override void OnDisappearing()
+        protected override async void OnDisappearing()
         {
             base.OnDisappearing();
 
-            OrderAdapter.Pull(_view.Model);
+            await OrderAdapter.Pull(_view.Model);
         }
 
         private void Product_Tapped(object sender, EventArgs e)

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YsmStore.API", "YsmStore.API.csproj", "{872CD420-2AFC-43B6-A407-BEE9D8B93C61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{872CD420-2AFC-43B6-A407-BEE9D8B93C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872CD420-2AFC-43B6-A407-BEE9D8B93C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872CD420-2AFC-43B6-A407-BEE9D8B93C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872CD420-2AFC-43B6-A407-BEE9D8B93C61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D239A117-5C65-49B2-9062-BCD0E1053AA4}
+	EndGlobalSection
+EndGlobal

@@ -1,47 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="YsmStore.Pages.ProductListPage"
-             xmlns:controls="clr-namespace:YsmStore.Controls"
-             xmlns:models="clr-namespace:YsmStore.Models"
-             NavigationPage.HasNavigationBar="False"
-             BackgroundColor="{StaticResource Color1}">
+<ContentPage
+    x:Class="YsmStore.Pages.ProductListPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    BackgroundColor="{StaticResource Color1}"
+    NavigationPage.HasNavigationBar="False">
     <ContentPage.BindingContext>
-        <models:ProductListView x:Name="viewList"/>
+        <models:ProductListView x:Name="viewList" />
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
             <controls:NavigationBar>
                 <controls:NavigationBar.BarContent>
                     <StackLayout>
-                        <Label Text="ТЕХНИКА" Style="{StaticResource Caption3}"/>
+                        <Label Style="{StaticResource Caption3}" Text="ТЕХНИКА" />
                         <Grid ColumnDefinitions="*,*" HeightRequest="60">
-                            <Picker x:Name="sortPicker" ItemsSource="{Binding AllSortVariants}" SelectedItem="{Binding Query.SortVariant}"
-                                    SelectedIndexChanged="QueryChanged"/>
-                            <Button Text="Сортировать" Style="{StaticResource Button1}" FontSize="15" Clicked="SortButton_Tapped"/>
-                            <Picker x:Name="filterPicker" ItemsSource="{Binding AllTitles}" Grid.Column="1" 
-                                    SelectedItem="{Binding Query.Filter}" SelectedIndexChanged="QueryChanged"/>
-                            <Button Text="Фильтровать" Style="{StaticResource Button1}" Grid.Column="1" FontSize="15" Clicked="FilterButton_Tapped"/>
+                            <Picker
+                                x:Name="sortPicker"
+                                ItemsSource="{Binding AllSortVariants}"
+                                SelectedIndexChanged="QueryChanged"
+                                SelectedItem="{Binding Query.SortVariant}" />
+                            <Button
+                                Clicked="SortButton_Tapped"
+                                FontSize="15"
+                                Style="{StaticResource Button1}"
+                                Text="Сортировать" />
+                            <Picker
+                                x:Name="filterPicker"
+                                Grid.Column="1"
+                                ItemsSource="{Binding AllTitles}"
+                                SelectedIndexChanged="QueryChanged"
+                                SelectedItem="{Binding Query.Filter}" />
+                            <Button
+                                Grid.Column="1"
+                                Clicked="FilterButton_Tapped"
+                                FontSize="15"
+                                Style="{StaticResource Button1}"
+                                Text="Фильтровать" />
                         </Grid>
                     </StackLayout>
                 </controls:NavigationBar.BarContent>
                 <controls:NavigationBar.RightButton>
-                    <ImageButton Source="menu.png" BackgroundColor="#00000000" Margin="15" Clicked="MenuButton_Tapped"/>
+                    <ImageButton
+                        Margin="15"
+                        BackgroundColor="#00000000"
+                        Clicked="MenuButton_Tapped"
+                        Source="menu.png" />
                 </controls:NavigationBar.RightButton>
             </controls:NavigationBar>
             <StackLayout>
-                <CollectionView x:Name="productView" ItemsLayout="VerticalGrid, 2" SelectionMode="None" ItemsSource="{Binding Items}"
-                                RemainingItemsThresholdReachedCommand="{Binding LoadNext}" RemainingItemsThreshold="1" 
-                                SelectionChanged="Product_Tapped">
+                <CollectionView
+                    x:Name="productView"
+                    ItemsLayout="VerticalGrid, 2"
+                    ItemsSource="{Binding Items}"
+                    RemainingItemsThreshold="1"
+                    RemainingItemsThresholdReachedCommand="{Binding LoadNext}"
+                    SelectionChanged="Product_Tapped"
+                    SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalTextAlignment="Center"
+                            Text="Здесь ничего нет"
+                            TextColor="Gray"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout Padding="15, 5">
-                                <Frame BackgroundColor="{StaticResource Color2}" Padding="0" HeightRequest="180" Style="{StaticResource RoundedFrame}">
-                                    <Image Source="{Binding Model.Avatar}" Aspect="AspectFill"/>
+                            <StackLayout Padding="15,5">
+                                <Frame
+                                    Padding="0"
+                                    BackgroundColor="{StaticResource Color2}"
+                                    HeightRequest="180"
+                                    Style="{StaticResource RoundedFrame}">
+                                    <Image Aspect="AspectFill" Source="{Binding Model.Avatar}" />
                                 </Frame>
-                                <Label Text="{Binding Model.Title}" Style="{StaticResource Caption2}" HorizontalOptions="Center"/>
+                                <Label
+                                    HorizontalOptions="Center"
+                                    Style="{StaticResource Caption2}"
+                                    Text="{Binding Model.Title}" />
                                 <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="Product_Tapped"/>
+                                    <TapGestureRecognizer Tapped="Product_Tapped" />
                                 </StackLayout.GestureRecognizers>
                             </StackLayout>
                         </DataTemplate>

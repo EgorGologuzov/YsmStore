@@ -10,30 +10,27 @@ namespace YsmStore.Controls
     {
         public static readonly BindableProperty PlaceholderProperty =
             BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(RegularEntry), null, BindingMode.TwoWay);
+        public static new readonly BindableProperty BackgroundColorProperty =
+            BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(RegularEntry), null, BindingMode.TwoWay);
+        public static readonly BindableProperty TextProperty =
+            BindableProperty.Create(nameof(Text), typeof(string), typeof(RegularEntry), null, BindingMode.TwoWay);
+        public static readonly BindableProperty KeyboardProperty =
+            BindableProperty.Create(nameof(Text), typeof(Keyboard), typeof(RegularEntry), null, BindingMode.TwoWay);
         public string Placeholder
         {
             get => (string)GetValue(PlaceholderProperty);
             set => SetValue(PlaceholderProperty, value);
         }
-
-        public static new readonly BindableProperty BackgroundColorProperty =
-            BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(RegularEntry), null, BindingMode.TwoWay);
         public new Color BackgroundColor
         {
             get => (Color)GetValue(BackgroundColorProperty);
             set => SetValue(BackgroundColorProperty, value);
         }
-
-        public static readonly BindableProperty TextProperty =
-            BindableProperty.Create(nameof(Text), typeof(string), typeof(RegularEntry), null, BindingMode.TwoWay);
         public string Text
         {
             get => (string)GetValue(TextProperty);
             set => SetValue(TextProperty, value);
         }
-
-        public static readonly BindableProperty KeyboardProperty =
-            BindableProperty.Create(nameof(Text), typeof(Keyboard), typeof(RegularEntry), null, BindingMode.TwoWay);
         public Keyboard Keyboard
         {
             get => (Keyboard)GetValue(KeyboardProperty);

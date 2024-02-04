@@ -38,6 +38,8 @@ namespace YsmStore.API.Data
         {
             modelBuilder.Entity<Option>().HasKey(o => new { o.ProductTitle, o.Number });
             modelBuilder.Entity<Customer>().HasIndex(c => c.Login).IsUnique();
+            modelBuilder.Entity<Product>().HasIndex(p => new { p.Title, p.Option1, p.Option2 }).IsUnique();
+            modelBuilder.Entity<Product>().HasIndex(p => p.Category);
             modelBuilder.Entity<OrderedProduct>().HasKey(op => new { op.OrderId, op.ProductId });
             modelBuilder.Entity<ProductInCart>().HasKey(pk => new { pk.CustomerId, pk.ProductId });
 
