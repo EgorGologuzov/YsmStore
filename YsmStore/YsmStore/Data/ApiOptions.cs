@@ -12,7 +12,6 @@ namespace YsmStore.Data
         public static HttpClient Client = new HttpClient();
         private static readonly TimeSpan _tokenUpdateInterval = TimeSpan.FromMinutes(1);
         private static DateTime _lastTokenUpdate = DateTime.MinValue;
-        private static bool _isBusy = false;
         private static User _user => AuthSystem.LoginedUser;
 
         public static async Task<string> GetActualToken()
@@ -22,13 +21,6 @@ namespace YsmStore.Data
                 throw new YsmStoreException("Cannot get actual token: LoginedUser is null");
             }
 
-            if (_isBusy)
-            {
-                return _user.Token;
-            }
-
-            _isBusy = true;
-
             if (DateTime.Now - _lastTokenUpdate > _tokenUpdateInterval)
             {
                 var response = await Client.GetAsync($"{RootUrl}/auth/{_user.Login}/{_user.Password}");
@@ -36,8 +28,6 @@ namespace YsmStore.Data
                 _user.Token = await response.Content.ReadAsStringAsync();
                 _lastTokenUpdate = DateTime.Now;
             }
-
-            _isBusy = false;
 
             return _user.Token;
         }
