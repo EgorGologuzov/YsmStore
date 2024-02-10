@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -125,7 +126,7 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest && await response.FirstErrorKey() == RequestError.LoginNotAvailable)
+                if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     throw new YsmStoreException("Пользователь с таким логином уже существует");
                 }
@@ -165,17 +166,11 @@ namespace YsmStore.Data
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    switch (await response.FirstErrorKey())
-                    {
-                        case RequestError.LoginNotFound:
-                            throw new YsmStoreException("Пользователь с таким логином уже существует");
-                        case RequestError.IncorrestLoginOrPassword:
-                            throw new YsmStoreException("Неверный пароль восстановления");
-                    }
+                    throw new YsmStoreException("Неверный логин или пароль воссатновления");
                 }
                 else
                 {
-                    throw new YsmStoreException("Не удалось подключиться к серверу");
+                   throw new YsmStoreException("Не удалось подключиться к серверу");
                 }
             }
             finally
