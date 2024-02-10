@@ -201,7 +201,7 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest && await response.FirstErrorKey() == RequestError.LoginNotFound)
+                if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     throw new YsmStoreException("Пользователя с таким логином не существует");
                 }

@@ -25,15 +25,16 @@ namespace YsmStore.Pages
         {
             if (_lastRecoveryTime == null || (DateTime.Now - _lastRecoveryTime).Value.TotalMinutes >= 1)
             {
-                if (_lastRecoveryTime != null)
-                {
-                    await DisplayAlert("Сообщение", "Письмо отправлено повторно", "ОК");
-                }
-
                 try
                 {
                     await AuthSystem.SendRecoveryRequest(_data.Login);
                     dataStackLayout.IsVisible = true;
+
+                    if (_lastRecoveryTime != null)
+                    {
+                        await DisplayAlert("Сообщение", "Письмо отправлено повторно", "ОК");
+                    }
+
                     _lastRecoveryTime = DateTime.Now;
                 }
                 catch (YsmStoreException ex)

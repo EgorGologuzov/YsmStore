@@ -6,7 +6,7 @@
     <ContentView.Content>
         <Frame BackgroundColor="{StaticResource Color2}" Style="{StaticResource RoundedFrame}">
             <StackLayout>
-                <Grid ColumnDefinitions="1*,1*,2*,1*" RowDefinitions="70">
+                <Grid ColumnDefinitions="1*,0.8*,2.4*,1*" RowDefinitions="70">
                     <ImageButton
                         x:Name="backButton"
                         Margin="20"
@@ -23,7 +23,7 @@
                         Grid.Column="2"
                         FontAttributes="Bold"
                         FontSize="25"
-                        Text="TechoCore"
+                        Text="TECHOCORE"
                         TextColor="{StaticResource Color4}"
                         VerticalOptions="Center" />
                     <Frame
