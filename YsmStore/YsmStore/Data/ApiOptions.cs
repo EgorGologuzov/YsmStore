@@ -8,7 +8,7 @@ namespace YsmStore.Data
 {
     public static class ApiOptions
     {
-        public const string RootUrl = "http://158.160.78.11/api";
+        public const string RootUrl = "http://158.160.11.130/api";
         public static HttpClient Client = new HttpClient();
         private static readonly TimeSpan _tokenUpdateInterval = TimeSpan.FromMinutes(1);
         private static DateTime _lastTokenUpdate = DateTime.MinValue;

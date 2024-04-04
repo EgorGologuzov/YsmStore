@@ -11,7 +11,7 @@ namespace YsmStore.Data
 {
     public static class PhotoAdapter
     {
-        private static HttpClient _client = new HttpClient();
+        private static HttpClient _client = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) };
 
         public static async Task<string> Upload(Stream imageStream)
         {
@@ -31,7 +31,7 @@ namespace YsmStore.Data
                 var request = new HttpRequestMessage()
                 {
                     Method = HttpMethod.Post,
-                    RequestUri = new Uri("http://158.160.78.11/api/image"),
+                    RequestUri = new Uri($"{ApiOptions.RootUrl}/image"),
                     Content = content
                 };
 

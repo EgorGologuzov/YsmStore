@@ -23,7 +23,7 @@ namespace YsmStore.Data
         private const string AUTHDATA_IS_NULL_MESSAGE = "AuthData is null";
         private const string RECOVERY_PASSWORD_UNFILLED_MESSAGE = "Пароль восстановления не заполнен";
 
-        private static HttpClient _client = new HttpClient();
+        private static HttpClient _client = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) };
 
         public static User LoginedUser { get; private set; }
 
