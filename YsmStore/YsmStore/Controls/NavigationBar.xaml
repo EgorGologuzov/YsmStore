@@ -22,8 +22,8 @@
                     <Label
                         Grid.Column="2"
                         FontAttributes="Bold"
-                        FontSize="25"
-                        Text="TECHOCORE"
+                        FontSize="23"
+                        Text="TECHNOCORE"
                         TextColor="{StaticResource Color4}"
                         VerticalOptions="Center" />
                     <Frame

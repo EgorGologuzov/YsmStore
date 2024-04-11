@@ -1,51 +1,76 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="YsmStore.Pages.AuthPage"
-             NavigationPage.HasNavigationBar="False"
-             xmlns:controls="clr-namespace:YsmStore.Controls"
-             xmlns:models="clr-namespace:YsmStore.Models">
+<ContentPage
+    x:Class="YsmStore.Pages.AuthPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:YsmStore.Controls"
+    xmlns:models="clr-namespace:YsmStore.Models"
+    NavigationPage.HasNavigationBar="False">
     <ContentPage.BindingContext>
-        <models:AuthData/>
+        <models:AuthData />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <Grid RowDefinitions="40, 2*,1*" BackgroundColor="{StaticResource Color2}">
-            <Frame BackgroundColor="{StaticResource Color1}"/>
-            <Frame Style="{StaticResource RoundedFrame}" BackgroundColor="{StaticResource Color1}" Grid.RowSpan="2"/>
+        <Grid BackgroundColor="{StaticResource Color2}" RowDefinitions="40, 2*,1*">
+            <Frame BackgroundColor="{StaticResource Color1}" />
+            <Frame
+                Grid.RowSpan="2"
+                BackgroundColor="{StaticResource Color1}"
+                Style="{StaticResource RoundedFrame}" />
             <StackLayout Grid.RowSpan="3" Padding="20">
-                <StackLayout VerticalOptions="EndAndExpand" Padding="0, 0, 0, 40">
-                    <Image Source="Logo_2" WidthRequest="150"/>
-                    <Label Text="TechoCore" Style="{StaticResource Caption1}"/>
-                    <Label Text="ТЕХНИКА APPLE" Style="{StaticResource Caption2}"/>
+                <StackLayout Padding="0,0,0,40" VerticalOptions="EndAndExpand">
+                    <Image Source="Logo_2" WidthRequest="150" />
+                    <Label Style="{StaticResource Caption1}" Text="TechnoCore" />
+                    <Label Style="{StaticResource Caption2}" Text="ТЕХНИКА APPLE" />
                 </StackLayout>
                 <StackLayout>
-                    <Frame Style="{StaticResource RoundedFrame}" Padding="30, 20">
+                    <Frame Padding="30,20" Style="{StaticResource RoundedFrame}">
                         <StackLayout>
-                            <controls:RegularEntry BackgroundColor="{StaticResource Color3}" Placeholder="Почта" 
-                                                   Margin="0, 10, 0, 10" Text="{Binding Login}"/>
-                            <controls:PasswordEntry BackgroundColor="{StaticResource Color3}" Placeholder="Пароль" 
-                                                    Margin="0, 10, 0, 0" Text="{Binding Password}"/>
+                            <controls:RegularEntry
+                                Margin="0,10,0,10"
+                                BackgroundColor="{StaticResource Color3}"
+                                Placeholder="Почта"
+                                Text="{Binding Login}" />
+                            <controls:PasswordEntry
+                                Margin="0,10,0,0"
+                                BackgroundColor="{StaticResource Color3}"
+                                Placeholder="Пароль"
+                                Text="{Binding Password}" />
                             <Grid ColumnDefinitions="*,*">
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                                    <CheckBox Color="{StaticResource LinkedLabelColor}" IsChecked="{Binding RememberMe}"/>
-                                    <Label Text="Запомнить меня" TextColor="{StaticResource LinkedLabelColor}" FontSize="12"
-                                           VerticalOptions="Center"/>
+                                <StackLayout
+                                    HorizontalOptions="Center"
+                                    Orientation="Horizontal"
+                                    VerticalOptions="Center">
+                                    <CheckBox IsChecked="{Binding RememberMe}" Color="{StaticResource LinkedLabelColor}" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="Запомнить меня"
+                                        TextColor="{StaticResource LinkedLabelColor}"
+                                        VerticalOptions="Center" />
                                 </StackLayout>
-                                <Label Text="Забыли пароль?" TextColor="{StaticResource LinkedLabelColor}" FontSize="12"
-                                       VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="1">
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="12"
+                                    HorizontalOptions="Center"
+                                    Text="Забыли пароль?"
+                                    TextColor="{StaticResource LinkedLabelColor}"
+                                    VerticalOptions="Center">
                                     <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="ForgotPassword_Tapped"/>
+                                        <TapGestureRecognizer Tapped="ForgotPassword_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
                             </Grid>
-                            <Button Text="Войти" Style="{StaticResource Button1}" Clicked="LoginButton_Tapped" Margin="0, 0, 0, 20"/>
-                            <Label Style="{StaticResource Text1}" HorizontalOptions="Center">
+                            <Button
+                                Margin="0,0,0,20"
+                                Clicked="LoginButton_Tapped"
+                                Style="{StaticResource Button1}"
+                                Text="Войти" />
+                            <Label HorizontalOptions="Center" Style="{StaticResource Text1}">
                                 <Label.FormattedText>
                                     <FormattedString>
-                                        <Span Text="Нет аккаунта? "/>
+                                        <Span Text="Нет аккаунта? " />
                                         <Span Text="Создайте аккаунт" TextColor="{StaticResource LinkedLabelColor}">
                                             <Span.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="CreateAccountLabel_Tapped"/>
+                                                <TapGestureRecognizer Tapped="CreateAccountLabel_Tapped" />
                                             </Span.GestureRecognizers>
                                         </Span>
                                     </FormattedString>
