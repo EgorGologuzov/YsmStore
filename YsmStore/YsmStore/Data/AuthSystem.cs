@@ -88,14 +88,11 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    throw new YsmStoreException("Неверный логин или пароль");
-                }
-                else
-                {
-                    throw new YsmStoreException("Не удалось подключиться к серверу");
-                }
+                throw new YsmStoreException("Неверный логин или пароль");
+            }
+            catch (OperationCanceledException)
+            {
+                throw new YsmStoreException("Не удалось подключиться к серверу");
             }
             finally
             {
@@ -126,14 +123,11 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    throw new YsmStoreException("Пользователь с таким логином уже существует");
-                }
-                else
-                {
-                    throw new YsmStoreException("Не удалось подключиться к серверу");
-                }
+                throw new YsmStoreException("Пользователь с таким логином уже существует");
+            }
+            catch (OperationCanceledException)
+            {
+                throw new YsmStoreException("Не удалось подключиться к серверу");
             }
             finally
             {
@@ -164,14 +158,11 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    throw new YsmStoreException("Неверный логин или пароль воссатновления");
-                }
-                else
-                {
-                   throw new YsmStoreException("Не удалось подключиться к серверу");
-                }
+                throw new YsmStoreException("Неверный логин или пароль воссатновления");
+            }
+            catch (OperationCanceledException)
+            {
+                throw new YsmStoreException("Не удалось подключиться к серверу");
             }
             finally
             {
@@ -196,14 +187,11 @@ namespace YsmStore.Data
             }
             catch (HttpRequestException)
             {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    throw new YsmStoreException("Пользователя с таким логином не существует");
-                }
-                else
-                {
-                    throw new YsmStoreException("Не удалось подключиться к серверу");
-                }
+                throw new YsmStoreException("Пользователя с таким логином не существует");
+            }
+            catch (OperationCanceledException)
+            {
+                throw new YsmStoreException("Не удалось подключиться к серверу");
             }
             finally
             {
