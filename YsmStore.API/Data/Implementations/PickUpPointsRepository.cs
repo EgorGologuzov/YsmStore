@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using YsmStore.API.Data.Interfaces;
 using YsmStore.API.Models;
+using YsmStore.API.Utils;
 using YsmStore.Services.Utils;
 
 namespace YsmStore.API.Data.Implementations
@@ -20,16 +21,19 @@ namespace YsmStore.API.Data.Implementations
 
         private readonly Dictionary<int, DateTime> _adressesLastUpdate;
         private readonly Dictionary<int, string[]> _adresses;
+        private readonly PickUpPointsFileCash _cash;
         private DateTime _tokenLastUpdate;
         private string _token;
 
         private DateTime _citiesLastUpdate;
         private Locality[] _cities;
+
         public PickUpPointsRepository()
         {
             _client = new HttpClient();
             _adressesLastUpdate = new();
             _adresses = new();
+            _cash = new();
         }
 
         public async Task<Locality[]> GetCities()
@@ -73,12 +77,17 @@ namespace YsmStore.API.Data.Implementations
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
             using HttpResponseMessage response = await _client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.IsSuccessStatusCode)
+            {
+                JObject[] result = JsonConvert.DeserializeObject<JObject[]>(await response.Content.ReadAsStringAsync());
+                _adresses[cityId] = result.Select(j => j["location"]["city"].Value<string>() + ", " + j["location"]["address"].Value<string>()).ToArray();
+            }
+            else if (_adresses.ContainsKey(cityId) == false || _adresses[cityId] is null)
+            {
+                _adresses[cityId] = _cash.Adresses.ContainsKey(cityId.ToString()) ? _cash.Adresses[cityId.ToString()] : new string[0];
+            }
 
-            JObject[] result = JsonConvert.DeserializeObject<JObject[]>(await response.Content.ReadAsStringAsync());
-            string[] adresses = result.Select(j => j["location"]["city"].Value<string>() + ", " + j["location"]["address"].Value<string>()).ToArray();
-
-            _adresses[cityId] = adresses;
             _adressesLastUpdate[cityId] = DateTime.Now;
         }
 
@@ -105,10 +114,17 @@ namespace YsmStore.API.Data.Implementations
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
             using HttpResponseMessage response = await _client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            string result = await response.Content.ReadAsStringAsync();
-            _cities = result.FromJson<Locality[]>();
+            
+            if (response.IsSuccessStatusCode)
+            {
+                string result = await response.Content.ReadAsStringAsync();
+                _cities = result.FromJson<Locality[]>();
+            }
+            else if (_cities is null || _cities.Length == 0)
+            {
+                _cities = _cash.Cities;
+            }
+            
             _citiesLastUpdate = DateTime.Now;
         }
 
